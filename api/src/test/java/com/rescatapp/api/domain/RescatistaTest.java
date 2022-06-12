@@ -8,7 +8,7 @@ public class RescatistaTest {
 
     @Test
     public void registrarConPerroGuardaMascota() {
-        Rescatista rescatista = new Rescatista(1L, new Localizacion(-50f, -50f,"prueba"), "prueba", "1234", "test@†est.com");
+        Rescatista rescatista = new Rescatista(1L, new Localizacion(-50f, -50f,"prueba"), "prueba", "1234", "test@†est.com", null);
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
 
         Mascota resultado = rescatista.registrar(perro);
