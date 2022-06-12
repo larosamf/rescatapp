@@ -8,6 +8,7 @@ public class Transitista extends Persona {
     private final List<Mascota> mascotasTransitadas = new ArrayList<>();
     private final List<Mascota> mascotasTransitadoActualmente = new ArrayList<>();
     private boolean estaActivo;
+    private List<SolicitudDeTransito> solicitudes = new ArrayList<>();
 
     public Transitista(Long id, Localizacion localizacion, String nombre, String telefono, String email, int capacidad) {
         super(id, localizacion, nombre, telefono, email);
@@ -25,11 +26,31 @@ public class Transitista extends Persona {
         return false;
     }
 
-    public Mascota aceptar(Mascota mascota){
+    public boolean agregar(SolicitudDeTransito solicitud) {
+        this.solicitudes.add(solicitud);
+        return true;
+    }
+
+    public Mascota aceptar(SolicitudDeTransito solicitud){
         if (this.capacidad > 0 && this.estaActivo) {
+            solicitud.aprobar();
+            Mascota mascota = solicitud.getMascota();
             mascota.setIdUsuarioResponsable(this.getId());
             this.mascotasTransitadoActualmente.add(mascota);
             this.capacidad--;
+            return mascota;
+        }
+        return null;
+    }
+
+    public Mascota rechazar(SolicitudDeTransito solicitud){
+        solicitud.rechazar();
+        return null;
+    }
+
+    public Mascota pasarAAdopcion(Mascota mascota) {
+        if (mascotasTransitadoActualmente.contains(mascota)) {
+            mascota.pasarAAdopcion();
             return mascota;
         }
         return null;
@@ -43,11 +64,7 @@ public class Transitista extends Persona {
         return mascotasTransitadoActualmente;
     }
 
-    public Mascota pasarAAdopcion(Mascota mascota) {
-        if (mascotasTransitadoActualmente.contains(mascota)) {
-            mascota.pasarAAdopcion();
-            return mascota;
-        }
-        return null;
+    public List<SolicitudDeTransito> getSolicitudes() {
+        return this.solicitudes;
     }
 }
