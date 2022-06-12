@@ -16,6 +16,13 @@ public class Mascota {
         OTRO
     }
 
+    public enum Estado {
+        RESCATADO,
+        EN_TRANSITO,
+        EN_ADOPCION,
+        ADOPTADO
+    }
+
     private final Long id;
     private Long idUsuarioResponsable;
     private String nombre;
@@ -24,8 +31,9 @@ public class Mascota {
     private List<Vacuna> vacunas;
     private String descripcion;
     private final Tipo tipo;
+    private int estado;
 
-    public Mascota(Long id, Long idUsuarioResponsable, String nombre, Tamano tamano, int edad, List<Vacuna> vacunas, String descripcion, Tipo tipo) {
+    public Mascota(Long id, Long idUsuarioResponsable, String nombre, Tamano tamano, int edad, List<Vacuna> vacunas, String descripcion, Tipo tipo, int estado) {
         this.id = id;
         this.idUsuarioResponsable = idUsuarioResponsable;
         this.nombre = nombre;
@@ -34,11 +42,13 @@ public class Mascota {
         this.vacunas = vacunas;
         this.descripcion = descripcion;
         this.tipo = tipo;
+        this.estado = estado;
     }
 
     public Mascota(Long id, Tipo tipo) {
         this.id = id;
         this.tipo = tipo;
+        this.estado = 1;
     }
 
     public Long getId() {
@@ -104,5 +114,20 @@ public class Mascota {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public boolean estaEnAdopcion() {
+        if (this.estado == 3) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean pasarAAdopcion() {
+        if (this.estado != 4) {
+            this.estado = 3;
+            return true;
+        }
+        return false;
     }
 }
