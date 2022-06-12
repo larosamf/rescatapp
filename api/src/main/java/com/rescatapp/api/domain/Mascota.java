@@ -31,9 +31,9 @@ public class Mascota {
     private List<Vacuna> vacunas;
     private String descripcion;
     private final Tipo tipo;
-    private int estado;
+    private Estado estado;
 
-    public Mascota(Long id, Long idUsuarioResponsable, String nombre, Tamano tamano, int edad, List<Vacuna> vacunas, String descripcion, Tipo tipo, int estado) {
+    public Mascota(Long id, Long idUsuarioResponsable, String nombre, Tamano tamano, int edad, List<Vacuna> vacunas, String descripcion, Tipo tipo, Estado estado) {
         this.id = id;
         this.idUsuarioResponsable = idUsuarioResponsable;
         this.nombre = nombre;
@@ -48,7 +48,7 @@ public class Mascota {
     public Mascota(Long id, Tipo tipo) {
         this.id = id;
         this.tipo = tipo;
-        this.estado = 1;
+        this.estado = Estado.RESCATADO;
     }
 
     public Long getId() {
@@ -117,15 +117,15 @@ public class Mascota {
     }
 
     public boolean estaEnAdopcion() {
-        if (this.estado == 3) {
+        if (this.estado == Estado.EN_ADOPCION) {
             return true;
         }
         return false;
     }
 
     public boolean pasarAAdopcion() {
-        if (this.estado != 4) {
-            this.estado = 3;
+        if (this.estado != Estado.ADOPTADO) {
+            this.estado = Estado.EN_ADOPCION;
             return true;
         }
         return false;
