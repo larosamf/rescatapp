@@ -3,7 +3,7 @@ package com.rescatapp.api.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rescatista extends Persona {
+public class Rescatista extends Usuario {
     private final List<Mascota> mascotasRescatadas = new ArrayList<>();
 
     public Rescatista(Long id, Localizacion localizacion, String nombre, String telefono, String email, ProcesadorPagos procesadorPagos) {

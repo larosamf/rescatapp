@@ -3,7 +3,7 @@ package com.rescatapp.api.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Transitista extends Persona {
+public class Transitista extends Usuario {
     private int capacidad;
     private final List<Mascota> mascotasTransitadas = new ArrayList<>();
     private final List<Mascota> mascotasTransitadoActualmente = new ArrayList<>();

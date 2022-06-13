@@ -3,7 +3,7 @@ package com.rescatapp.api.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Persona {
+public abstract class Usuario {
     private final Long id;
     private Localizacion localizacion;
     private String nombre;
@@ -13,7 +13,7 @@ public abstract class Persona {
     private final List<Donacion> donacionesRealizadas = new ArrayList<>();
     protected final ProcesadorPagos procesadorPagos;
 
-    public Persona(Long id, Localizacion localizacion, String nombre, String telefono, String email, ProcesadorPagos procesadorPagos) {
+    public Usuario(Long id, Localizacion localizacion, String nombre, String telefono, String email, ProcesadorPagos procesadorPagos) {
         this.id = id;
         this.localizacion = localizacion;
         this.nombre = nombre;
