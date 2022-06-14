@@ -3,15 +3,16 @@ package com.rescatapp.api.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Transitista extends Persona {
+public class Transitista extends Usuario {
     private int capacidad;
     private final List<Mascota> mascotasTransitadas = new ArrayList<>();
     private final List<Mascota> mascotasTransitadoActualmente = new ArrayList<>();
+    private final List<Donacion> donacionesRecibidas = new ArrayList<>();
     private boolean estaActivo;
     private List<SolicitudDeTransito> solicitudes = new ArrayList<>();
 
-    public Transitista(Long id, Localizacion localizacion, String nombre, String telefono, String email, int capacidad) {
-        super(id, localizacion, nombre, telefono, email);
+    public Transitista(Long id, Localizacion localizacion, String nombre, String telefono, String email, int capacidad, ProcesadorPagos procesadorPagos) {
+        super(id, localizacion, nombre, telefono, email, procesadorPagos);
         this.capacidad = capacidad;
         this.estaActivo = false;
     }
@@ -67,4 +68,15 @@ public class Transitista extends Persona {
     public List<SolicitudDeTransito> getSolicitudes() {
         return this.solicitudes;
     }
+
+    public List<Donacion> getDonacionesRecibidas() {
+        return donacionesRecibidas;
+    }
+
+    public void recibirDonacion(Donacion donacion) {
+        this.procesadorPagos.pagar(donacion.getMontoADepositar(), this.getCbu());
+        this.procesadorPagos.recaudar(donacion.getMontoComision());
+        this.donacionesRecibidas.add(donacion);
+    }
+
 }
