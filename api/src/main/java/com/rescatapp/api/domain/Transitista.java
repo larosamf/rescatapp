@@ -1,6 +1,7 @@
 package com.rescatapp.api.domain;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Transitista extends Usuario {
@@ -112,4 +113,39 @@ public class Transitista extends Usuario {
         this.donacionesRecibidas.add(donacion);
     }
 
+    public float calcularPuntuacionTotal() {
+        float total = 0;
+        float penalizacion = 0;
+        Date diferencia_fechas;
+        Date tiempo_aceptable = new Date(0,0,0,0,15,0);
+        float result;
+        //Caso por si tiene menos de 15 puntuaciones
+        if (this.puntuacionesRecibidas.size() <= 15) {
+            for (Puntuacion puntaje : this.puntuacionesRecibidas) {
+                total += puntaje.getEstrellas();
+                if (puntaje.getIsAdoptista()) {
+                    total += puntaje.getEstrellas();
+                }
+            }
+        //Caso por si tiene mas de 15 puntuaciones
+        }else{
+            for (Puntuacion puntaje : this.puntuacionesRecibidas) {
+                total += puntaje.getEstrellas();
+            }
+        }
+        //Resto penalizaciones por administrar lentamente las solicitudes de transito
+        for (SolicitudDeTransito solicitud : this.solicitudesDeTransito) {
+            diferencia_fechas = solicitud.getFechaDeRespuesta() - solicitud.getFechaDeCreación();
+            if (diferencia_fechas < tiempo_aceptable) {
+                penalizacion += 0.1F;
+            }
+        }
+        result = total - penalizacion;
+        //Devuelvo 0 tiene mas penalizaciones que puntuacion y devuelve el promedio en caso contrario
+        if (result <= 0){
+            return 0;
+        }else{
+            return result / this.puntuacionesRecibidas.size();
+        }
+    }
 }
