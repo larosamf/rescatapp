@@ -48,4 +48,8 @@ public abstract class SolicitudCambioDeResposableDeMascota {
     public boolean estaEnCurso() {
         return this.enCurso;
     }
+
+    public Long getIdSolicitante() {
+        return idSolicitante;
+    }
 }
