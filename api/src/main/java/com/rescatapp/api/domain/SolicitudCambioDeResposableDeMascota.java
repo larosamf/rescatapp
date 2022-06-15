@@ -49,7 +49,18 @@ public abstract class SolicitudCambioDeResposableDeMascota {
         return this.enCurso;
     }
 
+
     public Long getIdSolicitante() {
         return idSolicitante;
     }
+
+    public Date getFechaDeCreación() {
+        return this.fechaDeCreación;
+    }
+
+    public Date getFechaDeRespuesta() {
+        return this.fechaDeRespuesta;
+    }
+
+
 }
