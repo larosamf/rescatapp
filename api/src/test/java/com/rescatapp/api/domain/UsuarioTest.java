@@ -50,4 +50,20 @@ public class UsuarioTest {
 
         assertThat(resultado).isEqualTo(false);
     }
+
+    @Test
+    public void calcularPuntuacionTotalConUsuarioNoTransitistaDevuelvePromedio() {
+        ProcesadorPagos procesadorPagos = mock(ProcesadorPagos.class);
+        Usuario usuario = new PersonaTest.DummyPersona(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",  procesadorPagos);
+        Puntuacion puntuacion_1 = new Puntuacion(2.5F, "Buena persona.");
+        usuario.agregarPuntuacion(puntuacion_1);
+        Puntuacion puntuacion_2 = new Puntuacion(5F, "Buena persona.");
+        usuario.agregarPuntuacion(puntuacion_2);
+        Puntuacion puntuacion_3 = new Puntuacion(1.5F, "Buena persona.");
+        usuario.agregarPuntuacion(puntuacion_3);
+
+        float resultado = usuario.calcularPuntuacionTotal();
+        assertThat(resultado).isEqualTo(3F);
+
+    }
 }
