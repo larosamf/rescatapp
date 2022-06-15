@@ -13,7 +13,7 @@ public abstract class Usuario {
     private String cbu;
     private final List<Donacion> donacionesRealizadas = new ArrayList<>();
     protected final ProcesadorPagos procesadorPagos;
-
+    final List<Puntuacion> puntuacionesRecibidas = new ArrayList<>();
     public Usuario(Long id, Localizacion localizacion, String nombre, String telefono, String email, ProcesadorPagos procesadorPagos) {
         this.id = id;
         this.localizacion = localizacion;
@@ -26,6 +26,17 @@ public abstract class Usuario {
     public void donar(Donacion donacion) {
         procesadorPagos.cobrar(donacion.getMontoACobrar(), this.cbu);
         this.donacionesRealizadas.add(donacion);
+    }
+    public void agregarPuntuacion(Puntuacion puntuacion) {
+        this.puntuacionesRecibidas.add(puntuacion);
+    }
+
+    public float calcularPuntuacionTotal() {
+        float total = 0;
+        for (Puntuacion puntaje : this.puntuacionesRecibidas) {
+            total += puntaje.getEstrellas();
+        }
+        return total / this.puntuacionesRecibidas.size();
     }
 
     public boolean estaCercaDe(Localizacion localizacion) {
