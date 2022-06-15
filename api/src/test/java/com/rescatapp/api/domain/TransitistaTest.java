@@ -1,6 +1,7 @@
 package com.rescatapp.api.domain;
 
 import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
@@ -12,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TransitistaTest {
 
     @Test
-    public void aceptarConPerroYTransititasActivoAgregaMascotaASuCargo() {
+    public void aceptarConSolicitudDeTransitoYTransititasActivoAgregaMascotaASuCargo() {
         Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, null);
         transitista.mostrarComoActivo();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
@@ -27,7 +28,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void pasarAAdopcionConPerroPasaMascotaAEnAdopcion() {
+    public void pasarAAdopcionConSolicitudDeTransitoPasaMascotaAEnAdopcion() {
         Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, null);
         transitista.mostrarComoActivo();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
@@ -41,7 +42,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void agregarSolicitudConPerroLaAgregaAlTransitistaYCambiaSuEstado() {
+    public void agregarSolicitudConSolicitudDeTransitoLaAgregaAlTransitista() {
         Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f,"prueba"), "prueba", "1234", "test@†est.com", 2, null);
         transitista.mostrarComoActivo();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
@@ -49,16 +50,42 @@ public class TransitistaTest {
 
         transitista.agregar(solicitud);
 
-        assertThat(transitista.getSolicitudes()).contains(solicitud);
+        assertThat(transitista.getSolicitudesDeTransito()).contains(solicitud);
         assertThat(solicitud.estaEnCurso()).isEqualTo(true);
     }
 
     @Test
-    public void rechazarSolicitudConPerroLaDejaEnEstadoRechazada() {
-        Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f,"prueba"), "prueba", "1234", "test@†est.com", 2, null);
-        transitista.mostrarComoActivo();
+    public void aceptarConSolicitudDeAdopcionYTransititasActivoAumentaEnUnoSuCapacidad() {
+        Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, 10L, 1L);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, new Date(), perro, 10L, 1L);
+
+        Mascota resultado = transitista.aceptar(solicitud);
+
+        assertThat(resultado).isEqualTo(perro);
+        assertThat(resultado.getIdUsuarioResponsable()).isEqualTo(10L);
+        assertThat(transitista.getmascotasTransitadas()).contains(perro);
+        assertThat(solicitud.tieneEstadoAprobada()).isEqualTo(true);
+        assertThat(transitista.getCapacidad()).isEqualTo(4);
+    }
+
+    @Test
+    public void agregarSolicitudConSolicitudDeAdopcionLaAgregaAlTransitista() {
+        Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, new Date(), perro, 10L, 1L);
+
+        transitista.agregar(solicitud);
+
+        assertThat(transitista.getSolicitudesDeAdopcion()).contains(solicitud);
+        assertThat(solicitud.estaEnCurso()).isEqualTo(true);
+    }
+
+    @Test
+    public void rechazarSolicitudConSolicitudDeAdopcionLaDejaEnEstadoRechazada() {
+        Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, new Date(), perro, 10L, 1L);
 
         transitista.rechazar(solicitud);
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 public abstract class Usuario {
     private final Long id;
+    private final double max_km_para_considerar_cercanos = 1;
     private Localizacion localizacion;
     private String nombre;
     private String telefono;
@@ -25,6 +26,12 @@ public abstract class Usuario {
     public void donar(Donacion donacion) {
         procesadorPagos.cobrar(donacion.getMontoACobrar(), this.cbu);
         this.donacionesRealizadas.add(donacion);
+    }
+
+    public boolean estaCercaDe(Localizacion localizacion) {
+        if (localizacion.calcularDistanciaEnKilometros(this.localizacion) < this.max_km_para_considerar_cercanos)
+            return true;
+        return false;
     }
 
     public Long getId() {

@@ -22,7 +22,7 @@ public class TransitistaBuilder {
     public static TransitistaBuilder transitistaActivoConMascotas(){
         TransitistaBuilder transitistaBuilder = new TransitistaBuilder();
         transitistaBuilder.transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",3,null);
-        List<Mascota> mascotas = asList(new Mascota(8L, Mascota.Tipo.PERRO), new Mascota(9L, Mascota.Tipo.PERRO), new Mascota(10L, Mascota.Tipo.PERRO));
+        List<Mascota> mascotas = new ArrayList<>(asList(new Mascota(8L, Mascota.Tipo.PERRO), new Mascota(9L, Mascota.Tipo.PERRO), new Mascota(10L, Mascota.Tipo.PERRO)));
         transitistaBuilder.transitista.mascotasTransitadoActualmente = mascotas;
         transitistaBuilder.transitista.mostrarComoActivo();
         return transitistaBuilder;
