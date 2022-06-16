@@ -1,5 +1,7 @@
 package com.rescatapp.api.domain;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContextExtensionsKt;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -117,7 +119,7 @@ public class Transitista extends Usuario {
         float total = 0;
         float penalizacion = 0;
         long diferencia_fechas;
-        long tiempo_aceptable = new Date(0,0,0,0,15,0).getTime();
+        long tiempo_aceptable = 900000;
         float result;
         long divisor = this.puntuacionesRecibidas.size();
         //Caso por si tiene menos de 15 puntuaciones
@@ -138,8 +140,9 @@ public class Transitista extends Usuario {
         //Resto penalizaciones por administrar lentamente las solicitudes de transito
         for (SolicitudDeTransito solicitud : this.solicitudesDeTransito) {
             diferencia_fechas = solicitud.getFechaDeRespuesta().getTime() - solicitud.getFechaDeCreacion().getTime();
-            if (diferencia_fechas < tiempo_aceptable) {
+            if (diferencia_fechas > tiempo_aceptable) {
                 penalizacion += 0.1F;
+                System.out.print(tiempo_aceptable);
             }
         }
         result = total - penalizacion;

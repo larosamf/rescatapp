@@ -121,7 +121,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon15Puntuaciones() {
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16Puntuaciones() {
         Transitista transitista = TransitistaBuilder.transitistaPuntuado16Veces().build();
 
         float resultado = transitista.calcularPuntuacionTotal();
@@ -136,5 +136,30 @@ public class TransitistaTest {
         float resultado = transitista.calcularPuntuacionTotal();
 
         assertThat(resultado).isEqualTo(3.5F);
+    }
+
+    @Test
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16PuntuacionesYUnaRespuestaInmediata() {
+        Transitista transitista = TransitistaBuilder.transitistaPuntuado16Veces().build();
+        SolicitudDeTransito solicitud = SolicitudDeTransitoBuilder.SolicitudDeTransitoRespuestaInmediata().build();
+
+        transitista.agregar(solicitud);
+
+        float resultado = transitista.calcularPuntuacionTotal();
+
+        assertThat(resultado).isEqualTo(2.5F);
+    }
+
+    @Test
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16PuntuacionesYCincoRespuestasConMuchaDemora() {
+        Transitista transitista = TransitistaBuilder.transitistaPuntuado16Veces().build();
+        SolicitudDeTransito solicitud = SolicitudDeTransitoBuilder.SolicitudDeTransitoRespuestaConMuchaDemora().build();
+        for (int i = 0; i <= 5; i++){
+            transitista.agregar(solicitud);
+        }
+
+        float resultado = transitista.calcularPuntuacionTotal();
+
+        assertThat(resultado).isEqualTo(2.4625F);
     }
 }

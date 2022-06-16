@@ -43,9 +43,9 @@ public class TransitistaBuilder {
     public static TransitistaBuilder transitistaPuntuado16Veces(){
         TransitistaBuilder transitistaBuilder = new TransitistaBuilder();
         transitistaBuilder.transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",3,null);
-        Puntuacion puntuacion_1 = new Puntuacion(2.5F, "Buena persona.");
-        for (int i = 0; i <= 16; i++ ){
-            transitistaBuilder.transitista.agregarPuntuacion(puntuacion_1);
+        Puntuacion puntuacion = new Puntuacion(2.5F, "Buena persona.");
+        for (int i = 0; i < 16; i++ ){
+            transitistaBuilder.transitista.agregarPuntuacion(puntuacion);
         }
         return transitistaBuilder;
     }

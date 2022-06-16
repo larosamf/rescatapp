@@ -5,7 +5,7 @@ import java.util.Date;
 public abstract class SolicitudCambioDeResposableDeMascota {
     private Long id;
     private Date fechaDeCreacion;
-    private Date fechaDeRespuesta;
+    Date fechaDeRespuesta;
     private boolean estaAprobada;
     private Mascota mascota;
     private Long idSolicitante;
