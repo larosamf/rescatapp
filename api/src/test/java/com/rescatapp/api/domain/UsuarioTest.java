@@ -54,7 +54,7 @@ public class UsuarioTest {
     @Test
     public void calcularPuntuacionTotalConUsuarioNoTransitistaDevuelvePromedio() {
         ProcesadorPagos procesadorPagos = mock(ProcesadorPagos.class);
-        Usuario usuario = new PersonaTest.DummyPersona(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",  procesadorPagos);
+        Usuario usuario = new UsuarioTest.DummyUsuario(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",  procesadorPagos);
         Puntuacion puntuacion_1 = new Puntuacion(2.5F, "Buena persona.");
         usuario.agregarPuntuacion(puntuacion_1);
         Puntuacion puntuacion_2 = new Puntuacion(5F, "Buena persona.");

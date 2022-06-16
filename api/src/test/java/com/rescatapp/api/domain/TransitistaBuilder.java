@@ -28,6 +28,40 @@ public class TransitistaBuilder {
         return transitistaBuilder;
     }
 
+    public static TransitistaBuilder transitistaPuntuado3Veces(){
+        TransitistaBuilder transitistaBuilder = new TransitistaBuilder();
+        transitistaBuilder.transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",3,null);
+        Puntuacion puntuacion_1 = new Puntuacion(2.5F, "Buena persona.");
+        transitistaBuilder.transitista.agregarPuntuacion(puntuacion_1);
+        Puntuacion puntuacion_2 = new Puntuacion(5F, "Buena persona.");
+        transitistaBuilder.transitista.agregarPuntuacion(puntuacion_2);
+        Puntuacion puntuacion_3 = new Puntuacion(1.5F, "Buena persona.");
+        transitistaBuilder.transitista.agregarPuntuacion(puntuacion_3);
+        return transitistaBuilder;
+    }
+
+    public static TransitistaBuilder transitistaPuntuado16Veces(){
+        TransitistaBuilder transitistaBuilder = new TransitistaBuilder();
+        transitistaBuilder.transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",3,null);
+        Puntuacion puntuacion_1 = new Puntuacion(2.5F, "Buena persona.");
+        for (int i = 0; i <= 16; i++ ){
+            transitistaBuilder.transitista.agregarPuntuacion(puntuacion_1);
+        }
+        return transitistaBuilder;
+    }
+
+    public static TransitistaBuilder transitistaPuntuado3Veces1PorAdoptista(){
+        TransitistaBuilder transitistaBuilder = new TransitistaBuilder();
+        transitistaBuilder.transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",3,null);
+        Puntuacion puntuacion_1 = new Puntuacion(2.5F, "Buena persona.");
+        transitistaBuilder.transitista.agregarPuntuacion(puntuacion_1);
+        Puntuacion puntuacion_2 = new Puntuacion(5F, "Buena persona.",true);
+        transitistaBuilder.transitista.agregarPuntuacion(puntuacion_2);
+        Puntuacion puntuacion_3 = new Puntuacion(1.5F, "Buena persona.");
+        transitistaBuilder.transitista.agregarPuntuacion(puntuacion_3);
+        return transitistaBuilder;
+    }
+
     public Transitista build(){
         return this.transitista;
     }

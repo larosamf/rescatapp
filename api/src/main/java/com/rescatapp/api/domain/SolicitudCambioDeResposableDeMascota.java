@@ -4,7 +4,7 @@ import java.util.Date;
 
 public abstract class SolicitudCambioDeResposableDeMascota {
     private Long id;
-    private Date fechaDeCreación;
+    private Date fechaDeCreacion;
     private Date fechaDeRespuesta;
     private boolean estaAprobada;
     private Mascota mascota;
@@ -14,7 +14,7 @@ public abstract class SolicitudCambioDeResposableDeMascota {
 
     public SolicitudCambioDeResposableDeMascota(Long id, Date fechaDeCreación, Mascota mascota, Long idSolicitante, Long idSolicitado) {
         this.id = id;
-        this.fechaDeCreación = fechaDeCreación;
+        this.fechaDeCreacion = fechaDeCreación;
         this.fechaDeRespuesta = null;
         this.estaAprobada = false;
         this.mascota = mascota;
@@ -54,8 +54,8 @@ public abstract class SolicitudCambioDeResposableDeMascota {
         return idSolicitante;
     }
 
-    public Date getFechaDeCreación() {
-        return this.fechaDeCreación;
+    public Date getFechaDeCreacion() {
+        return this.fechaDeCreacion;
     }
 
     public Date getFechaDeRespuesta() {

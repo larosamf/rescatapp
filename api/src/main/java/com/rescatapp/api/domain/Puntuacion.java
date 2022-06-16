@@ -16,8 +16,14 @@ public class Puntuacion {
         this.comentario = comentario;
     }
 
+    public Puntuacion(float estrellas, String comentario, boolean isAdoptista) {
+        this.estrellas = estrellas;
+        this.comentario = comentario;
+        this.isAdoptista = isAdoptista;
+    }
+
     public float getEstrellas(){ return this.estrellas; }
 
-    public boolean getIsAdoptista(){ return this.isAdoptista; }
+    public boolean provieneDeAdoptista(){ return this.isAdoptista; }
 }
 

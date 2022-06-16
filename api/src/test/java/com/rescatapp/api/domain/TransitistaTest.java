@@ -110,4 +110,31 @@ public class TransitistaTest {
         verify(procesadorPagos).recaudar(donacion.getMontoComision());
 
     }
+
+    @Test
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon3Puntuaciones() {
+        Transitista transitista = TransitistaBuilder.transitistaPuntuado3Veces().build();
+
+        float resultado = transitista.calcularPuntuacionTotal();
+
+        assertThat(resultado).isEqualTo(3F);
+    }
+
+    @Test
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon15Puntuaciones() {
+        Transitista transitista = TransitistaBuilder.transitistaPuntuado16Veces().build();
+
+        float resultado = transitista.calcularPuntuacionTotal();
+
+        assertThat(resultado).isEqualTo(2.5F);
+    }
+
+    @Test
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon3Puntuaciones1DeAdoptista() {
+        Transitista transitista = TransitistaBuilder.transitistaPuntuado3Veces1PorAdoptista().build();
+
+        float resultado = transitista.calcularPuntuacionTotal();
+
+        assertThat(resultado).isEqualTo(3.5F);
+    }
 }
