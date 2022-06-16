@@ -1,1 +1,2 @@
-# rescatapp
+# RescatApp
+Java + Spring Boot 
