@@ -11,7 +11,7 @@ public class Rescatista extends Usuario {
     }
 
     public Mascota registrar(Mascota mascota) {
-        mascota.setIdUsuarioResponsable(this.getId());
+        mascota.setUsuarioResponsable(this);
         this.mascotasRescatadas.add(mascota);
         return mascota;
     }

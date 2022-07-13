@@ -1,9 +1,6 @@
 package com.rescatapp.api.domain;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContextExtensionsKt;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Transitista extends Usuario {
@@ -41,7 +38,7 @@ public class Transitista extends Usuario {
         if (this.capacidad > 0 && this.estaActivo) {
             solicitud.aprobar();
             Mascota mascota = solicitud.getMascota();
-            mascota.setIdUsuarioResponsable(this.getId());
+            mascota.setUsuarioResponsable(this);
             this.mascotasTransitadoActualmente.add(mascota);
             this.capacidad--;
             return mascota;
@@ -63,7 +60,7 @@ public class Transitista extends Usuario {
         Mascota mascota = solicitud.getMascota();
         if (this.mascotasTransitadoActualmente.contains(mascota) && this.estaActivo) {
             solicitud.aprobar();
-            mascota.setIdUsuarioResponsable(solicitud.getIdSolicitante());
+            mascota.setUsuarioResponsable(solicitud.getUsuarioSolicitante());
             this.mascotasTransitadoActualmente.remove(mascota);
             this.mascotasTransitadas.add(mascota);
             this.capacidad++;

@@ -14,7 +14,7 @@ public class RescatistaTest {
         Mascota resultado = rescatista.registrar(perro);
 
         assertThat(resultado).isEqualTo(perro);
-        assertThat(resultado.getIdUsuarioResponsable()).isEqualTo(rescatista.getId());
+        assertThat(resultado.getUsuarioResponsable()).isEqualTo(rescatista);
         assertThat(rescatista.getMascotasRescatadas()).contains(perro);
     }
 }

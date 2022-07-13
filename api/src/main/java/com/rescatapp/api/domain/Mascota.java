@@ -24,7 +24,7 @@ public class Mascota {
     }
 
     private final Long id;
-    private Long idUsuarioResponsable;
+    private Usuario usuarioResponsable;
     private String nombre;
     private Tamano tamano;
     private int edad;
@@ -33,9 +33,9 @@ public class Mascota {
     private final Tipo tipo;
     private Estado estado;
 
-    public Mascota(Long id, Long idUsuarioResponsable, String nombre, Tamano tamano, int edad, List<Vacuna> vacunas, String descripcion, Tipo tipo, Estado estado) {
+    public Mascota(Long id, Usuario usuarioResponsable, String nombre, Tamano tamano, int edad, List<Vacuna> vacunas, String descripcion, Tipo tipo, Estado estado) {
         this.id = id;
-        this.idUsuarioResponsable = idUsuarioResponsable;
+        this.usuarioResponsable = usuarioResponsable;
         this.nombre = nombre;
         this.tamano = tamano;
         this.edad = edad;
@@ -55,12 +55,12 @@ public class Mascota {
         return id;
     }
 
-    public Long getIdUsuarioResponsable() {
-        return idUsuarioResponsable;
+    public Usuario getUsuarioResponsable() {
+        return usuarioResponsable;
     }
 
-    public void setIdUsuarioResponsable(Long idUsuarioResponsable) {
-        this.idUsuarioResponsable = idUsuarioResponsable;
+    public void setUsuarioResponsable(Usuario usuarioResponsable) {
+        this.usuarioResponsable = usuarioResponsable;
     }
 
     public String getNombre() {

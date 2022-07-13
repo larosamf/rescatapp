@@ -12,6 +12,13 @@ public class TransitistaBuilder {
         this.transitista = null;
     }
 
+    public static TransitistaBuilder transitistaActivo(){
+        TransitistaBuilder transitistaBuilder = new TransitistaBuilder();
+        transitistaBuilder.transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",3,null);
+        transitistaBuilder.transitista.mostrarComoActivo();
+        return transitistaBuilder;
+    }
+
     public static TransitistaBuilder transitistaConSolicitudesDeTransicion(List<SolicitudDeTransito> solicitudes){
         TransitistaBuilder transitistaBuilder = new TransitistaBuilder();
         transitistaBuilder.transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",3,null);

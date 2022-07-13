@@ -14,39 +14,38 @@ public class TransitistaTest {
 
     @Test
     public void aceptarConSolicitudDeTransitoYTransititasActivoAgregaMascotaASuCargo() {
-        Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, null);
-        transitista.mostrarComoActivo();
+        Transitista transitista = TransitistaBuilder.transitistaActivo().build();
+        Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, 10L, 1L);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
 
         Mascota resultado = transitista.aceptar(solicitud);
 
         assertThat(resultado).isEqualTo(perro);
-        assertThat(resultado.getIdUsuarioResponsable()).isEqualTo(transitista.getId());
+        assertThat(resultado.getUsuarioResponsable()).isEqualTo(transitista);
         assertThat(transitista.getMascotasEnTransito()).contains(perro);
         assertThat(solicitud.tieneEstadoAprobada()).isEqualTo(true);
     }
 
     @Test
     public void pasarAAdopcionConSolicitudDeTransitoPasaMascotaAEnAdopcion() {
-        Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, null);
-        transitista.mostrarComoActivo();
+        Transitista transitista = TransitistaBuilder.transitistaActivo().build();
+        Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, 10L, 1L);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
         transitista.aceptar(solicitud);
 
         transitista.pasarAAdopcion(perro);
 
         assertThat(perro.estaEnAdopcion()).isEqualTo(true);
-        assertThat(solicitud.estaEnCurso()).isEqualTo(false);
     }
 
     @Test
     public void agregarSolicitudConSolicitudDeTransitoLaAgregaAlTransitista() {
-        Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f,"prueba"), "prueba", "1234", "test@†est.com", 2, null);
-        transitista.mostrarComoActivo();
+        Transitista transitista = TransitistaBuilder.transitistaActivo().build();
+        Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, 10L, 1L);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
 
         transitista.agregar(solicitud);
 
@@ -57,13 +56,14 @@ public class TransitistaTest {
     @Test
     public void aceptarConSolicitudDeAdopcionYTransititasActivoAumentaEnUnoSuCapacidad() {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
+        Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, new Date(), perro, 10L, 1L);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, new Date(), perro, adoptista, transitista);
 
         Mascota resultado = transitista.aceptar(solicitud);
 
         assertThat(resultado).isEqualTo(perro);
-        assertThat(resultado.getIdUsuarioResponsable()).isEqualTo(10L);
+        assertThat(resultado.getUsuarioResponsable()).isEqualTo(adoptista);
         assertThat(transitista.getmascotasTransitadas()).contains(perro);
         assertThat(solicitud.tieneEstadoAprobada()).isEqualTo(true);
         assertThat(transitista.getCapacidad()).isEqualTo(4);
@@ -72,8 +72,9 @@ public class TransitistaTest {
     @Test
     public void agregarSolicitudConSolicitudDeAdopcionLaAgregaAlTransitista() {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
+        Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, new Date(), perro, 10L, 1L);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, new Date(), perro, adoptista, transitista);
 
         transitista.agregar(solicitud);
 
@@ -84,8 +85,9 @@ public class TransitistaTest {
     @Test
     public void rechazarSolicitudConSolicitudDeAdopcionLaDejaEnEstadoRechazada() {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
+        Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, new Date(), perro, 10L, 1L);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, new Date(), perro, adoptista, transitista);
 
         transitista.rechazar(solicitud);
 
