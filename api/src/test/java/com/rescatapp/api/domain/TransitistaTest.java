@@ -9,6 +9,7 @@ import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +21,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
 
         Mascota resultado = transitista.aceptar(solicitud);
 
@@ -35,7 +36,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
         transitista.aceptar(solicitud);
 
         transitista.pasarAAdopcion(perro);
@@ -60,7 +61,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
 
         transitista.agregar(solicitud);
 
@@ -73,7 +74,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
         Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, new Date(), perro, adoptista, transitista);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, LocalDateTime.now(), perro, adoptista, transitista);
 
         Mascota resultado = transitista.aceptar(solicitud);
 
@@ -99,7 +100,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
         Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, new Date(), perro, adoptista, transitista);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, LocalDateTime.now(), perro, adoptista, transitista);
 
         transitista.agregar(solicitud);
 
@@ -112,7 +113,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
         Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, new Date(), perro, adoptista, transitista);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, LocalDateTime.now(), perro, adoptista, transitista);
 
         transitista.rechazar(solicitud);
 

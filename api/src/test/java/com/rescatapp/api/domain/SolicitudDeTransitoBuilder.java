@@ -1,6 +1,6 @@
 package com.rescatapp.api.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class SolicitudDeTransitoBuilder {
     private SolicitudDeTransito solicitudDeTransito;
@@ -13,8 +13,8 @@ public class SolicitudDeTransitoBuilder {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         SolicitudDeTransitoBuilder solicitudDeTransitoBuilder = new SolicitudDeTransitoBuilder();
-        solicitudDeTransitoBuilder.solicitudDeTransito = new SolicitudDeTransito(2L,new Date(2022,6,1,8,0,0),new Mascota(8L, Mascota.Tipo.PERRO), rescatista, transitista);
-        solicitudDeTransitoBuilder.solicitudDeTransito.fechaDeRespuesta = new Date(2022,6,1,8,05,0);
+        solicitudDeTransitoBuilder.solicitudDeTransito = new SolicitudDeTransito(2L, LocalDateTime.of(2022, 6, 1, 8, 0),new Mascota(8L, Mascota.Tipo.PERRO), rescatista, transitista);
+        solicitudDeTransitoBuilder.solicitudDeTransito.fechaDeRespuesta = LocalDateTime.of(2022,6,1,8,5);
         return solicitudDeTransitoBuilder;
     }
 
@@ -22,8 +22,8 @@ public class SolicitudDeTransitoBuilder {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         SolicitudDeTransitoBuilder solicitudDeTransitoBuilder = new SolicitudDeTransitoBuilder();
-        solicitudDeTransitoBuilder.solicitudDeTransito = new SolicitudDeTransito(2L,new Date(2022,6,1,8,0,0),new Mascota(8L, Mascota.Tipo.PERRO), rescatista, transitista);
-        solicitudDeTransitoBuilder.solicitudDeTransito.fechaDeRespuesta = new Date(2022,6,1,9,5,0);
+        solicitudDeTransitoBuilder.solicitudDeTransito = new SolicitudDeTransito(2L,LocalDateTime.of(2022,6,1,8,0),new Mascota(8L, Mascota.Tipo.PERRO), rescatista, transitista);
+        solicitudDeTransitoBuilder.solicitudDeTransito.fechaDeRespuesta = LocalDateTime.of(2022,6,1,9,5);
         return solicitudDeTransitoBuilder;
     }
 
