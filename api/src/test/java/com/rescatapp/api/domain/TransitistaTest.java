@@ -1,7 +1,10 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.UsuarioNoTieneEsaMascotaException;
+import com.rescatapp.api.domain.exceptions.UsuarioSinCapacidadException;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
@@ -41,6 +44,18 @@ public class TransitistaTest {
     }
 
     @Test
+    public void aceptarSolicitudDeTransitoConTransitistaSinCapacidadLanzaException() {
+        Transitista transitista = TransitistaBuilder.transitistaActivo().build();
+        transitista.setCapacidad(0);
+        Rescatista rescatista = RescatistaBuilder.rescatista().build();
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
+
+
+        assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(UsuarioSinCapacidadException.class);
+    }
+
+    @Test
     public void agregarSolicitudConSolicitudDeTransitoLaAgregaAlTransitista() {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
@@ -67,6 +82,16 @@ public class TransitistaTest {
         assertThat(transitista.getmascotasTransitadas()).contains(perro);
         assertThat(solicitud.tieneEstadoAprobada()).isEqualTo(true);
         assertThat(transitista.getCapacidad()).isEqualTo(4);
+    }
+
+    @Test
+    public void aceptarSolicitudDeAdopcionConTransitistaSinMascotaLanzaException() {
+        Transitista transitista = TransitistaBuilder.transitistaActivo().build();
+        Adoptista adoptista = AdoptistaBuilder.adoptista().build();
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, new Date(), perro, adoptista, transitista);
+
+        assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(UsuarioNoTieneEsaMascotaException.class);
     }
 
     @Test
