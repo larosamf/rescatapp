@@ -115,10 +115,12 @@ public class Transitista extends Usuario {
     public float calcularPuntuacionTotal() {
         float total = 0;
         float penalizacion = 0;
-        long diferencia_fechas;
-        long tiempo_aceptable = 900000;
+        long diferenciaFechas;
+        long tiempoAceptable = 900000;
         float result;
         long divisor = this.puntuacionesRecibidas.size();
+        if (this.puntuacionesRecibidas.size() == 0)
+            return 0;
         //Caso por si tiene menos de 15 puntuaciones
         if (this.puntuacionesRecibidas.size() <= 15) {
             for (Puntuacion puntaje : this.puntuacionesRecibidas) {
@@ -136,10 +138,10 @@ public class Transitista extends Usuario {
         }
         //Resto penalizaciones por administrar lentamente las solicitudes de transito
         for (SolicitudDeTransito solicitud : this.solicitudesDeTransito) {
-            diferencia_fechas = solicitud.getFechaDeRespuesta().getTime() - solicitud.getFechaDeCreacion().getTime();
-            if (diferencia_fechas > tiempo_aceptable) {
+            diferenciaFechas = solicitud.getFechaDeRespuesta().getTime() - solicitud.getFechaDeCreacion().getTime();
+            if (diferenciaFechas > tiempoAceptable) {
                 penalizacion += 0.1F;
-                System.out.print(tiempo_aceptable);
+                System.out.print(tiempoAceptable);
             }
         }
         result = total - penalizacion;

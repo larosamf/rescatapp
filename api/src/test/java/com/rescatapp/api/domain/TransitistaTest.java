@@ -164,4 +164,14 @@ public class TransitistaTest {
 
         assertThat(resultado).isEqualTo(2.4625F);
     }
+
+    @Test
+    public void calcularPuntuacionTotalConTransitistaSinPuntuaciones() {
+        ProcesadorPagos procesadorPagos = mock(ProcesadorPagos.class);
+        Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, procesadorPagos);
+
+        float resultado = transitista.calcularPuntuacionTotal();
+
+        assertThat(resultado).isEqualTo(0);
+    }
 }

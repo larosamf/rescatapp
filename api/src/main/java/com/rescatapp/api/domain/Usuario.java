@@ -33,6 +33,8 @@ public abstract class Usuario {
 
     public float calcularPuntuacionTotal() {
         float total = 0;
+        if (this.puntuacionesRecibidas.size() == 0)
+            return 0;
         for (Puntuacion puntaje : this.puntuacionesRecibidas) {
             total += puntaje.getEstrellas();
         }
