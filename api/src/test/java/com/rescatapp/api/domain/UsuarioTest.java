@@ -1,5 +1,6 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.ValorComisionIncorrecto;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -15,7 +16,7 @@ public class UsuarioTest {
     }
 
     @Test
-    public void donarConUsuarioLeAgregaUnaDonacion() {
+    public void donarConUsuarioLeAgregaUnaDonacion() throws ValorComisionIncorrecto {
         ProcesadorPagos procesadorPagos = mock(ProcesadorPagos.class);
         String cbu = "11111111111111111111";
         Usuario usuario = new DummyUsuario(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",  procesadorPagos);

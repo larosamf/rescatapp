@@ -1,5 +1,6 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.ValorComisionIncorrecto;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
@@ -96,7 +97,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void recibirDonacionConDonacionTransfiereDineroATransitista() {
+    public void recibirDonacionConDonacionTransfiereDineroATransitista() throws ValorComisionIncorrecto {
         ProcesadorPagos procesadorPagos = mock(ProcesadorPagos.class);
         String cbu = "11111111111111111111";
         Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, procesadorPagos);
