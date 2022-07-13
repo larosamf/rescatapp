@@ -1,10 +1,10 @@
 package com.rescatapp.api.domain;
 
-public class Localizacion {
-    private Float latitud;
-    private Float longitud;
+public final class Localizacion {
+    private final Float latitud;
+    private final Float longitud;
 
-    private String direccion;
+    private final String direccion;
 
     public Localizacion(Float latitud, Float longitud, String direccion) {
         this.latitud = latitud;
@@ -31,23 +31,14 @@ public class Localizacion {
         return latitud;
     }
 
-    public void setLatitud(Float latitud) {
-        this.latitud = latitud;
-    }
 
     public Float getLongitud() {
         return longitud;
     }
 
-    public void setLongitud(Float longitud) {
-        this.longitud = longitud;
-    }
 
     public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
 }
