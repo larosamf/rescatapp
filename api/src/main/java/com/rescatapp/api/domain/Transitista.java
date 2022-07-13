@@ -1,5 +1,6 @@
 package com.rescatapp.api.domain;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,7 +117,7 @@ public class Transitista extends Usuario {
         float total = 0;
         float penalizacion = 0;
         long diferenciaFechas;
-        long tiempoAceptable = 900000;
+        long tiempoAceptableEnMinutos = 15;
         float result;
         long divisor = this.puntuacionesRecibidas.size();
         if (this.puntuacionesRecibidas.size() == 0)
@@ -138,10 +139,9 @@ public class Transitista extends Usuario {
         }
         //Resto penalizaciones por administrar lentamente las solicitudes de transito
         for (SolicitudDeTransito solicitud : this.solicitudesDeTransito) {
-            diferenciaFechas = solicitud.getFechaDeRespuesta().getTime() - solicitud.getFechaDeCreacion().getTime();
-            if (diferenciaFechas > tiempoAceptable) {
+            diferenciaFechas = ChronoUnit.MINUTES.between(solicitud.getFechaDeCreacion(), solicitud.getFechaDeRespuesta());
+            if (diferenciaFechas > tiempoAceptableEnMinutos) {
                 penalizacion += 0.1F;
-                System.out.print(tiempoAceptable);
             }
         }
         result = total - penalizacion;
