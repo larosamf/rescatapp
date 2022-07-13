@@ -8,18 +8,18 @@ public abstract class SolicitudCambioDeResposableDeMascota {
     Date fechaDeRespuesta;
     private boolean estaAprobada;
     private Mascota mascota;
-    private Long idSolicitante;
-    private Long idSolicitado;
+    private Usuario usuarioSolicitante;
+    private Usuario usuarioSolicitado;
     private boolean enCurso;
 
-    public SolicitudCambioDeResposableDeMascota(Long id, Date fechaDeCreación, Mascota mascota, Long idSolicitante, Long idSolicitado) {
+    public SolicitudCambioDeResposableDeMascota(Long id, Date fechaDeCreación, Mascota mascota, Usuario solicitante, Usuario solicitado) {
         this.id = id;
         this.fechaDeCreacion = fechaDeCreación;
         this.fechaDeRespuesta = null;
         this.estaAprobada = false;
         this.mascota = mascota;
-        this.idSolicitante = idSolicitante;
-        this.idSolicitado = idSolicitado;
+        this.usuarioSolicitante = solicitante;
+        this.usuarioSolicitado = solicitado;
         this.enCurso = true;
     }
 
@@ -50,8 +50,8 @@ public abstract class SolicitudCambioDeResposableDeMascota {
     }
 
 
-    public Long getIdSolicitante() {
-        return idSolicitante;
+    public Usuario getUsuarioSolicitante() {
+        return usuarioSolicitante;
     }
 
     public Date getFechaDeCreacion() {
