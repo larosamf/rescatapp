@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-public class Puntuacion {
+public final class Puntuacion {
     private final float estrellas;
 
     private final String comentario;

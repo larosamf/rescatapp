@@ -1,18 +1,20 @@
 package com.rescatapp.api.domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public abstract class SolicitudCambioDeResposableDeMascota {
     private Long id;
-    private Date fechaDeCreacion;
-    Date fechaDeRespuesta;
+    private LocalDateTime fechaDeCreacion;
+    LocalDateTime fechaDeRespuesta;
     private boolean estaAprobada;
     private Mascota mascota;
     private Usuario usuarioSolicitante;
     private Usuario usuarioSolicitado;
     private boolean enCurso;
 
-    public SolicitudCambioDeResposableDeMascota(Long id, Date fechaDeCreación, Mascota mascota, Usuario solicitante, Usuario solicitado) {
+    public SolicitudCambioDeResposableDeMascota(Long id, LocalDateTime fechaDeCreación, Mascota mascota, Usuario solicitante, Usuario solicitado) {
         this.id = id;
         this.fechaDeCreacion = fechaDeCreación;
         this.fechaDeRespuesta = null;
@@ -26,14 +28,14 @@ public abstract class SolicitudCambioDeResposableDeMascota {
     public boolean aprobar() {
         this.estaAprobada = true;
         this.enCurso = false;
-        this.fechaDeRespuesta = new Date();
+        this.fechaDeRespuesta = LocalDateTime.now();
         return true;
     }
 
     public boolean rechazar() {
         this.estaAprobada = false;
         this.enCurso = false;
-        this.fechaDeRespuesta = new Date();
+        this.fechaDeRespuesta = LocalDateTime.now();
         return false;
     }
 
@@ -54,11 +56,11 @@ public abstract class SolicitudCambioDeResposableDeMascota {
         return usuarioSolicitante;
     }
 
-    public Date getFechaDeCreacion() {
+    public LocalDateTime getFechaDeCreacion() {
         return this.fechaDeCreacion;
     }
 
-    public Date getFechaDeRespuesta() {
+    public LocalDateTime getFechaDeRespuesta() {
         return this.fechaDeRespuesta;
     }
 
