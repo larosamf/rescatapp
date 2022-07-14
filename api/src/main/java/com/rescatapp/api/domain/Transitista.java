@@ -1,13 +1,11 @@
 package com.rescatapp.api.domain;
 
-import com.rescatapp.api.domain.exceptions.NoSeCompletoRegistroDeMascotaException;
-import com.rescatapp.api.domain.exceptions.UsuarioNoTieneEsaMascotaException;
-import com.rescatapp.api.domain.exceptions.UsuarioReportadoException;
-import com.rescatapp.api.domain.exceptions.UsuarioSinCapacidadException;
+import com.rescatapp.api.domain.exceptions.*;
+
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Transitista extends Usuario {
     private int capacidad;
@@ -22,6 +20,7 @@ public class Transitista extends Usuario {
     List<SolicitudDeAdopcion> solicitudesDeAdopcion = new ArrayList<>();
 
     List<Transitista> contactosTransitistas = new ArrayList<>();
+    private final int minutosMaximosRespuesta = 10;
 
     public Transitista(Long id, Localizacion localizacion, String nombre, String telefono, String email, int capacidad, ProcesadorPagos procesadorPagos) {
         super(id, localizacion, nombre, telefono, email, procesadorPagos);
@@ -53,6 +52,11 @@ public class Transitista extends Usuario {
         if (solicitud.getUsuarioSolicitante().fueResportado()) {
             throw new UsuarioReportadoException("El rescatista no es confiable");
         }
+
+        if (ChronoUnit.MINUTES.between(solicitud.getFechaDeCreacion(), LocalDateTime.now()) > minutosMaximosRespuesta) {
+            throw new SolicitudVencidaException("La solicitud esta vencida");
+        }
+
 
         if (this.capacidad == 0 || !this.estaActivo) {
             throw new UsuarioSinCapacidadException("El transitista no tiene capacidad para recibir mas mascotas");

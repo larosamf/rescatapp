@@ -54,7 +54,6 @@ public abstract class SolicitudCambioDeResposableDeMascota {
         return this.enCurso;
     }
 
-
     public Usuario getUsuarioSolicitante() {
         return usuarioSolicitante;
     }

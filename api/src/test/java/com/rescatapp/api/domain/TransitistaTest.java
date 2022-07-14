@@ -1,5 +1,6 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.SolicitudVencidaException;
 import com.rescatapp.api.domain.exceptions.UsuarioNoTieneEsaMascotaException;
 import com.rescatapp.api.domain.exceptions.UsuarioSinCapacidadException;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,7 +59,19 @@ public class TransitistaTest {
         SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
 
 
-        assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(UsuarioSinCapacidadException.class);
+        assertThatThrownBy(() -> transitista.aceptar(solicitud)).isInstanceOf(UsuarioSinCapacidadException.class);
+    }
+
+    @Test
+    public void aceptarConSolicitudDeTransitoVencidaLanzaException() {
+        Transitista transitista = TransitistaBuilder.transitistaActivo().build();
+        Rescatista rescatista = RescatistaBuilder.rescatista().build();
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        perro.setCondicionFisica(Mascota.CondicionFisica.SANO);
+        perro.setPathFoto("/home/fotos/41351.png");
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now().minus(Duration.ofMinutes(20)), perro, rescatista, transitista);
+
+        assertThatThrownBy(() -> transitista.aceptar(solicitud)).isInstanceOf(SolicitudVencidaException.class);
     }
 
     @Test
@@ -110,7 +124,7 @@ public class TransitistaTest {
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
         SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, LocalDateTime.now(), perro, adoptista, transitista);
 
-        assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(UsuarioNoTieneEsaMascotaException.class);
+        assertThatThrownBy(() -> transitista.aceptar(solicitud)).isInstanceOf(UsuarioNoTieneEsaMascotaException.class);
     }
 
     @Test
