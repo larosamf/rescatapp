@@ -4,21 +4,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class Mascota {
-    public CondicionFisica getCondicionFisica() {
-        return condicionFisica;
-    }
-
-    public void setCondicionFisica(CondicionFisica condicionFisica) {
-        this.condicionFisica = condicionFisica;
-    }
-
-    public String getPathFoto() {
-        return pathFoto;
-    }
-
-    public void setPathFoto(String pathFoto) {
-        this.pathFoto = pathFoto;
-    }
 
     public enum Tamano {
         GRANDE,
@@ -128,6 +113,22 @@ public class Mascota {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public CondicionFisica getCondicionFisica() {
+        return condicionFisica;
+    }
+
+    public void setCondicionFisica(CondicionFisica condicionFisica) {
+        this.condicionFisica = condicionFisica;
+    }
+
+    public String getPathFoto() {
+        return pathFoto;
+    }
+
+    public void setPathFoto(String pathFoto) {
+        this.pathFoto = pathFoto;
     }
 
     @Override
