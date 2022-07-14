@@ -1,6 +1,8 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.NoSeCompletoRegistroDeMascotaException;
 import com.rescatapp.api.domain.exceptions.UsuarioNoTieneEsaMascotaException;
+import com.rescatapp.api.domain.exceptions.UsuarioReportadoException;
 import com.rescatapp.api.domain.exceptions.UsuarioSinCapacidadException;
 
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ public class Transitista extends Usuario {
     private boolean estaActivo;
     List<SolicitudDeTransito> solicitudesDeTransito = new ArrayList<>();
     List<SolicitudDeAdopcion> solicitudesDeAdopcion = new ArrayList<>();
+
+    List<Transitista> contactosTransitistas = new ArrayList<>();
 
     public Transitista(Long id, Localizacion localizacion, String nombre, String telefono, String email, int capacidad, ProcesadorPagos procesadorPagos) {
         super(id, localizacion, nombre, telefono, email, procesadorPagos);
@@ -38,19 +42,31 @@ public class Transitista extends Usuario {
     }
 
     public Mascota aceptar(SolicitudDeTransito solicitud) {
-        if (this.capacidad > 0 && this.estaActivo) {
-            solicitud.aprobar();
-            Mascota mascota = solicitud.getMascota();
-            mascota.setUsuarioResponsable(this);
-            this.mascotasTransitadoActualmente.add(mascota);
-            this.capacidad--;
-            return mascota;
+        if (solicitud.getUsuarioSolicitante().fueResportado()) {
+            throw new UsuarioReportadoException("El rescatista no es confiable");
         }
-        throw new UsuarioSinCapacidadException("El transitista no tiene capacidad para recibir mas mascotas");
+
+        if (this.capacidad == 0 || !this.estaActivo) {
+            throw new UsuarioSinCapacidadException("El transitista no tiene capacidad para recibir mas mascotas");
+        }
+
+        Mascota mascota = solicitud.getMascota();
+        if (!mascota.completoResgitro()) {
+            throw new NoSeCompletoRegistroDeMascotaException("No se completo el registro de la mascota");
+        }
+
+        solicitud.aprobar();
+        mascota.setUsuarioResponsable(this);
+        this.mascotasTransitadoActualmente.add(mascota);
+        this.capacidad--;
+        return mascota;
     }
 
     public void rechazar(SolicitudDeTransito solicitud){
         solicitud.rechazar();
+        if (contactosTransitistas.size() != 0) {
+            solicitud.cambiarUsuarioSolicitado(contactosTransitistas.get(0));
+        }
     }
 
     public boolean agregar(SolicitudDeAdopcion solicitud) {

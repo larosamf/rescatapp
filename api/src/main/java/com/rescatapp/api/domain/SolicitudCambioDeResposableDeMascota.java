@@ -62,5 +62,8 @@ public abstract class SolicitudCambioDeResposableDeMascota {
         return this.fechaDeRespuesta;
     }
 
+    public void cambiarUsuarioSolicitado(Usuario solicitado) {
+        this.usuarioSolicitado = solicitado;
+    }
 
 }

@@ -20,6 +20,8 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        perro.setCondicionFisica(Mascota.CondicionFisica.SANO);
+        perro.setPathFoto("/home/fotos/41351.png");
         SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
 
         Mascota resultado = transitista.aceptar(solicitud);
@@ -35,6 +37,8 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        perro.setCondicionFisica(Mascota.CondicionFisica.SANO);
+        perro.setPathFoto("/home/fotos/41351.png");
         SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
         transitista.aceptar(solicitud);
 
