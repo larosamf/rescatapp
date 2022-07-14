@@ -1,13 +1,16 @@
 package com.rescatapp.api.domain;
 
-import com.rescatapp.api.domain.exceptions.ValorComisionIncorrecto;
+import com.rescatapp.api.domain.exceptions.UsuarioNoTieneEsaMascotaException;
+import com.rescatapp.api.domain.exceptions.UsuarioSinCapacidadException;
+import com.rescatapp.api.domain.exceptions.ValorComisionIncorrectoException;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +21,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
 
         Mascota resultado = transitista.aceptar(solicitud);
 
@@ -33,7 +36,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
         transitista.aceptar(solicitud);
 
         transitista.pasarAAdopcion(perro);
@@ -42,11 +45,23 @@ public class TransitistaTest {
     }
 
     @Test
+    public void aceptarSolicitudDeTransitoConTransitistaSinCapacidadLanzaException() {
+        Transitista transitista = TransitistaBuilder.transitistaActivo().build();
+        transitista.setCapacidad(0);
+        Rescatista rescatista = RescatistaBuilder.rescatista().build();
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
+
+
+        assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(UsuarioSinCapacidadException.class);
+    }
+
+    @Test
     public void agregarSolicitudConSolicitudDeTransitoLaAgregaAlTransitista() {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
 
         transitista.agregar(solicitud);
 
@@ -59,7 +74,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
         Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, new Date(), perro, adoptista, transitista);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, LocalDateTime.now(), perro, adoptista, transitista);
 
         Mascota resultado = transitista.aceptar(solicitud);
 
@@ -71,11 +86,21 @@ public class TransitistaTest {
     }
 
     @Test
+    public void aceptarSolicitudDeAdopcionConTransitistaSinMascotaLanzaException() {
+        Transitista transitista = TransitistaBuilder.transitistaActivo().build();
+        Adoptista adoptista = AdoptistaBuilder.adoptista().build();
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, LocalDateTime.now(), perro, adoptista, transitista);
+
+        assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(UsuarioNoTieneEsaMascotaException.class);
+    }
+
+    @Test
     public void agregarSolicitudConSolicitudDeAdopcionLaAgregaAlTransitista() {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
         Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, new Date(), perro, adoptista, transitista);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, LocalDateTime.now(), perro, adoptista, transitista);
 
         transitista.agregar(solicitud);
 
@@ -88,7 +113,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
         Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, new Date(), perro, adoptista, transitista);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(1L, LocalDateTime.now(), perro, adoptista, transitista);
 
         transitista.rechazar(solicitud);
 
@@ -97,7 +122,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void recibirDonacionConDonacionTransfiereDineroATransitista() throws ValorComisionIncorrecto {
+    public void recibirDonacionConDonacionTransfiereDineroATransitista() throws ValorComisionIncorrectoException {
         ProcesadorPagos procesadorPagos = mock(ProcesadorPagos.class);
         String cbu = "11111111111111111111";
         Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, procesadorPagos);

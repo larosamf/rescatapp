@@ -1,5 +1,8 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.UsuarioNoTieneEsaMascotaException;
+import com.rescatapp.api.domain.exceptions.UsuarioSinCapacidadException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +37,7 @@ public class Transitista extends Usuario {
         return true;
     }
 
-    public Mascota aceptar(SolicitudDeTransito solicitud){
+    public Mascota aceptar(SolicitudDeTransito solicitud) {
         if (this.capacidad > 0 && this.estaActivo) {
             solicitud.aprobar();
             Mascota mascota = solicitud.getMascota();
@@ -43,12 +46,11 @@ public class Transitista extends Usuario {
             this.capacidad--;
             return mascota;
         }
-        return null;
+        throw new UsuarioSinCapacidadException("El transitista no tiene capacidad para recibir mas mascotas");
     }
 
-    public Mascota rechazar(SolicitudDeTransito solicitud){
+    public void rechazar(SolicitudDeTransito solicitud){
         solicitud.rechazar();
-        return null;
     }
 
     public boolean agregar(SolicitudDeAdopcion solicitud) {
@@ -66,12 +68,11 @@ public class Transitista extends Usuario {
             this.capacidad++;
             return mascota;
         }
-        return null;
+        throw new UsuarioNoTieneEsaMascotaException("El transitista no esta a cargo de esa mascotas");
     }
 
-    public Mascota rechazar(SolicitudDeAdopcion solicitud){
+    public void rechazar(SolicitudDeAdopcion solicitud){
         solicitud.rechazar();
-        return null;
     }
 
     public Mascota pasarAAdopcion(Mascota mascota) {
@@ -79,12 +80,17 @@ public class Transitista extends Usuario {
             mascota.pasarAAdopcion();
             return mascota;
         }
-        return null;
+        throw new UsuarioNoTieneEsaMascotaException("El transitista no esta a cargo de esa mascotas");
     }
 
     public int getCapacidad() {
         return capacidad;
     }
+
+    public void setCapacidad(int capacidad) {
+        this.capacidad = capacidad;
+    }
+
 
     public List<Mascota> getMascotasEnTransito() {
         return mascotasTransitadoActualmente;
@@ -116,7 +122,7 @@ public class Transitista extends Usuario {
         float total = 0;
         float penalizacion = 0;
         long diferenciaFechas;
-        long tiempoAceptable = 900000;
+        long tiempoAceptableEnMinutos = 15;
         float result;
         long divisor = this.puntuacionesRecibidas.size();
         if (this.puntuacionesRecibidas.size() == 0)
@@ -138,10 +144,9 @@ public class Transitista extends Usuario {
         }
         //Resto penalizaciones por administrar lentamente las solicitudes de transito
         for (SolicitudDeTransito solicitud : this.solicitudesDeTransito) {
-            diferenciaFechas = solicitud.getFechaDeRespuesta().getTime() - solicitud.getFechaDeCreacion().getTime();
-            if (diferenciaFechas > tiempoAceptable) {
+            diferenciaFechas = ChronoUnit.MINUTES.between(solicitud.getFechaDeCreacion(), solicitud.getFechaDeRespuesta());
+            if (diferenciaFechas > tiempoAceptableEnMinutos) {
                 penalizacion += 0.1F;
-                System.out.print(tiempoAceptable);
             }
         }
         result = total - penalizacion;

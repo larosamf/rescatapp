@@ -1,7 +1,7 @@
 package com.rescatapp.api.domain;
 
 
-import com.rescatapp.api.domain.exceptions.ValorComisionIncorrecto;
+import com.rescatapp.api.domain.exceptions.ValorComisionIncorrectoException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,12 +14,12 @@ public class Donacion {
     private final BigDecimal montoComision;
     private final BigDecimal comision;
 
-    public Donacion(Long id, BigDecimal montoACobrar, BigDecimal comision) throws ValorComisionIncorrecto {
+    public Donacion(Long id, BigDecimal montoACobrar, BigDecimal comision) throws ValorComisionIncorrectoException {
         this.id = id;
         this.montoACobrar = montoACobrar;
         this.comision = comision;
         if (this.comision.compareTo( new BigDecimal(0)) == -1 || this.comision.compareTo(new BigDecimal(100)) == 1)
-            throw new ValorComisionIncorrecto("El valor de la comision es incorrecto, tiene que ser un numero entre 0 y 100" );
+            throw new ValorComisionIncorrectoException("El valor de la comision es incorrecto, tiene que ser un numero entre 0 y 100" );
         this.montoComision = montoACobrar.multiply(comision.setScale(10, RoundingMode.HALF_DOWN).divide(new BigDecimal(100), RoundingMode.HALF_DOWN));
         this.montoADepositar = montoACobrar.subtract(this.montoComision);
     }
