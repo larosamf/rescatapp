@@ -45,9 +45,7 @@ public abstract class Usuario {
     }
 
     public boolean estaCercaDe(Localizacion localizacion) {
-        if (localizacion.calcularDistanciaEnKilometros(this.localizacion) < this.max_km_para_considerar_cercanos)
-            return true;
-        return false;
+        return localizacion.calcularDistanciaEnKilometros(this.localizacion) < this.max_km_para_considerar_cercanos;
     }
 
     public Long getId() {

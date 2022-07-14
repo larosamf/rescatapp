@@ -10,7 +10,6 @@ import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +29,7 @@ public class TransitistaTest {
         assertThat(resultado).isEqualTo(perro);
         assertThat(resultado.getUsuarioResponsable()).isEqualTo(transitista);
         assertThat(transitista.getMascotasEnTransito()).contains(perro);
-        assertThat(solicitud.tieneEstadoAprobada()).isEqualTo(true);
+        assertThat(solicitud.estaAprobada()).isEqualTo(true);
     }
 
     @Test
@@ -75,6 +74,20 @@ public class TransitistaTest {
     }
 
     @Test
+    public void agregarSolicitudCon5solicitudesPendientesLaRechaza() {
+        Rescatista rescatista = RescatistaBuilder.rescatista().build();
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        Transitista transitista = TransitistaBuilder.transitistaActivo().conSolicitudesPendientes(4, rescatista, perro).build();
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(1L, LocalDateTime.now(), perro, rescatista, transitista);
+
+        transitista.agregar(solicitud);
+
+        assertThat(transitista.solicitudesDeTransito).contains(solicitud);
+        assertThat(solicitud.estaRechazada()).isEqualTo(true);
+    }
+
+
+    @Test
     public void aceptarConSolicitudDeAdopcionYTransititasActivoAumentaEnUnoSuCapacidad() {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
         Adoptista adoptista = AdoptistaBuilder.adoptista().build();
@@ -86,7 +99,7 @@ public class TransitistaTest {
         assertThat(resultado).isEqualTo(perro);
         assertThat(resultado.getUsuarioResponsable()).isEqualTo(adoptista);
         assertThat(transitista.getmascotasTransitadas()).contains(perro);
-        assertThat(solicitud.tieneEstadoAprobada()).isEqualTo(true);
+        assertThat(solicitud.estaAprobada()).isEqualTo(true);
         assertThat(transitista.getCapacidad()).isEqualTo(4);
     }
 
@@ -122,7 +135,7 @@ public class TransitistaTest {
 
         transitista.rechazar(solicitud);
 
-        assertThat(solicitud.tieneEstadoAprobada()).isEqualTo(false);
+        assertThat(solicitud.estaAprobada()).isEqualTo(false);
         assertThat(solicitud.estaEnCurso()).isEqualTo(false);
     }
 
@@ -187,7 +200,7 @@ public class TransitistaTest {
     public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16PuntuacionesYCincoRespuestasConMuchaDemora() {
         Transitista transitista = TransitistaBuilder.transitistaPuntuado16Veces().build();
         SolicitudDeTransito solicitud = SolicitudDeTransitoBuilder.SolicitudDeTransitoRespuestaConMuchaDemora().build();
-        for (int i = 0; i <= 5; i++){
+        for (int i = 0; i <= 5; i++) {
             transitista.agregar(solicitud);
         }
 
