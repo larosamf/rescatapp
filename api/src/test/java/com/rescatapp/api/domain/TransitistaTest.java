@@ -55,7 +55,7 @@ public class TransitistaTest {
         transitista.setCapacidad(0);
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, new Date(), perro, rescatista, transitista);
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
 
 
         assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(UsuarioSinCapacidadException.class);
@@ -95,7 +95,7 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
-        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, new Date(), perro, adoptista, transitista);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, LocalDateTime.now(), perro, adoptista, transitista);
 
         assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(UsuarioNoTieneEsaMascotaException.class);
     }
