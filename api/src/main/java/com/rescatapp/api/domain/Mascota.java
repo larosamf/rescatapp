@@ -4,6 +4,22 @@ import java.util.List;
 import java.util.Objects;
 
 public class Mascota {
+    public CondicionFisica getCondicionFisica() {
+        return condicionFisica;
+    }
+
+    public void setCondicionFisica(CondicionFisica condicionFisica) {
+        this.condicionFisica = condicionFisica;
+    }
+
+    public String getPathFoto() {
+        return pathFoto;
+    }
+
+    public void setPathFoto(String pathFoto) {
+        this.pathFoto = pathFoto;
+    }
+
     public enum Tamano {
         GRANDE,
         MEDIANO,
@@ -23,6 +39,13 @@ public class Mascota {
         ADOPTADO
     }
 
+    public enum CondicionFisica {
+        SANO,
+        DEBIL,
+        LASTIMADO,
+        MUY_LASTIMADO
+    }
+
     private final Long id;
     private Usuario usuarioResponsable;
     private String nombre;
@@ -32,6 +55,10 @@ public class Mascota {
     private String descripcion;
     private final Tipo tipo;
     private Estado estado;
+
+    private String pathFoto;
+
+    private CondicionFisica condicionFisica;
 
     public Mascota(Long id, Usuario usuarioResponsable, String nombre, Tamano tamano, int edad, List<Vacuna> vacunas, String descripcion, Tipo tipo, Estado estado) {
         this.id = id;
