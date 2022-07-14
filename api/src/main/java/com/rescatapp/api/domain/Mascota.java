@@ -55,12 +55,16 @@ public class Mascota {
         this.descripcion = descripcion;
         this.tipo = tipo;
         this.estado = estado;
+        this.condicionFisica = null;
+        this.pathFoto = null;
     }
 
     public Mascota(Long id, Tipo tipo) {
         this.id = id;
         this.tipo = tipo;
         this.estado = Estado.RESCATADO;
+        this.condicionFisica = null;
+        this.pathFoto = null;
     }
 
     public Long getId() {
@@ -157,5 +161,9 @@ public class Mascota {
             return true;
         }
         return false;
+    }
+
+    public boolean completoResgitro() {
+        return ((this.condicionFisica != null) && (this.pathFoto != null));
     }
 }

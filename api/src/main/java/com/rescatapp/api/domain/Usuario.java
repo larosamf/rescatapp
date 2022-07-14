@@ -14,6 +14,8 @@ public abstract class Usuario {
     private final List<Donacion> donacionesRealizadas = new ArrayList<>();
     protected final ProcesadorPagos procesadorPagos;
     final List<Puntuacion> puntuacionesRecibidas = new ArrayList<>();
+    private boolean reportado;
+
     public Usuario(Long id, Localizacion localizacion, String nombre, String telefono, String email, ProcesadorPagos procesadorPagos) {
         this.id = id;
         this.localizacion = localizacion;
@@ -21,6 +23,7 @@ public abstract class Usuario {
         this.telefono = telefono;
         this.email = email;
         this.procesadorPagos = procesadorPagos;
+        this.reportado = false;
     }
 
     public void donar(Donacion donacion) {
@@ -95,4 +98,11 @@ public abstract class Usuario {
         return donacionesRealizadas;
     }
 
+    public void reportar() {
+        this.reportado = true;
+    }
+
+    public boolean fueResportado() {
+        return this.reportado;
+    }
 }
