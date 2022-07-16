@@ -141,8 +141,7 @@ public class Transitista extends Usuario {
     }
 
     public void recibirDonacion(Donacion donacion) {
-        this.procesadorPagos.pagar(donacion.getMontoADepositar(), this.getCbu());
-        this.procesadorPagos.recaudar(donacion.getMontoComision());
+        donacion.procesar(getCbu(), this.donacionesRecibidas.size(), this.procesadorPagos);
         this.donacionesRecibidas.add(donacion);
     }
 

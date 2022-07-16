@@ -8,16 +8,21 @@ import java.util.Objects;
 public class Donacion {
     private final Long id;
     private final BigDecimal montoACobrar;
-    private final BigDecimal montoADepositar;
-    private final BigDecimal montoComision;
-    private final BigDecimal comision;
+    private BigDecimal montoADepositar;
+    private BigDecimal comision;
+    private BigDecimal montoComision;
 
-    public Donacion(Long id, BigDecimal montoACobrar, BigDecimal comision) {
+    private final BigDecimal comisionRegular = new BigDecimal(10);
+
+    private final BigDecimal comisionRecurrente = new BigDecimal(5);
+
+    private final BigDecimal maximoMontoComision = new BigDecimal(1000);
+
+    private final int limiteRecurrente = 5;
+
+    public Donacion(Long id, BigDecimal montoACobrar) {
         this.id = id;
         this.montoACobrar = montoACobrar;
-        this.comision = comision;
-        this.montoComision = montoACobrar.multiply(comision.setScale(10, RoundingMode.HALF_DOWN).divide(new BigDecimal(100), RoundingMode.HALF_DOWN));
-        this.montoADepositar = montoACobrar.subtract(this.montoComision);
     }
 
     public Long getId() {
@@ -36,8 +41,13 @@ public class Donacion {
         return montoComision;
     }
 
-    public BigDecimal getComision() {
-        return comision;
+    public void procesar(String cbuDestino, int cantidadDonacionesRecibidas, ProcesadorPagos procesadorPagos) {
+        this.comision = cantidadDonacionesRecibidas >= limiteRecurrente ? comisionRecurrente : comisionRegular;
+        this.montoComision = montoACobrar.multiply(comision.setScale(10, RoundingMode.HALF_DOWN).divide(new BigDecimal(100), RoundingMode.HALF_DOWN)).min(maximoMontoComision);
+        this.montoADepositar = montoACobrar.subtract(this.montoComision);
+        procesadorPagos.pagar(montoADepositar, cbuDestino);
+        procesadorPagos.recaudar(montoComision);
+
     }
 
     @Override

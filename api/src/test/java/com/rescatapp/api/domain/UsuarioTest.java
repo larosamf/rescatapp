@@ -20,13 +20,11 @@ public class UsuarioTest {
         String cbu = "11111111111111111111";
         Usuario usuario = new DummyUsuario(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",  procesadorPagos);
         usuario.setCbu(cbu);
-        Donacion donacion = new Donacion(1L, new BigDecimal(100), new BigDecimal(1));
-        doNothing().when(procesadorPagos).pagar(donacion.getMontoADepositar(), cbu);
+        Donacion donacion = new Donacion(1L, new BigDecimal(100));
 
         usuario.donar(donacion);
 
         assertThat(usuario.getDonacionesRealizadas()).contains(donacion);
-        verify(procesadorPagos).cobrar(donacion.getMontoACobrar(), cbu);
     }
 
     @Test

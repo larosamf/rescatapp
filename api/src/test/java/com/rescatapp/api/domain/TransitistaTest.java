@@ -159,7 +159,7 @@ public class TransitistaTest {
         String cbu = "11111111111111111111";
         Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, procesadorPagos);
         transitista.setCbu(cbu);
-        Donacion donacion = new Donacion(1L, new BigDecimal(100), new BigDecimal(1));
+        Donacion donacion = new Donacion(1L, new BigDecimal(100));
         doNothing().when(procesadorPagos).pagar(donacion.getMontoADepositar(), cbu);
         doNothing().when(procesadorPagos).recaudar(donacion.getMontoComision());
 
