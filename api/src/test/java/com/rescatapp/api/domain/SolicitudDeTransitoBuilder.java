@@ -27,6 +27,16 @@ public class SolicitudDeTransitoBuilder {
         return solicitudDeTransitoBuilder;
     }
 
+    public static SolicitudDeTransitoBuilder SolicitudDeTransitoSinRespuesta(){
+        Transitista transitista = TransitistaBuilder.transitistaActivo().build();
+        Rescatista rescatista = RescatistaBuilder.rescatista().build();
+        SolicitudDeTransitoBuilder solicitudDeTransitoBuilder = new SolicitudDeTransitoBuilder();
+        Mascota mascota = new Mascota(8L, Mascota.Tipo.GATO);
+        mascota.setPathFoto("/home/13151.png");
+        mascota.setCondicionFisica(Mascota.CondicionFisica.SANO);
+        solicitudDeTransitoBuilder.solicitudDeTransito = new SolicitudDeTransito(2L,LocalDateTime.of(2022,6,1,8,0), mascota, rescatista, transitista);
+        return solicitudDeTransitoBuilder;
+    }
 
     public SolicitudDeTransito build(){
         return this.solicitudDeTransito;
