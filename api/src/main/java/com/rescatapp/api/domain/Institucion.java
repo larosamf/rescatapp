@@ -1,12 +1,16 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.InstitucionCerradaException;
 import com.rescatapp.api.domain.exceptions.NoSeCompletoRegistroDeMascotaException;
+import com.rescatapp.api.domain.exceptions.NoSeEncontroTransitistaException;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.lang.Double;
+import java.time.LocalDateTime;
+
 
 public class Institucion {
     private final Long id;
@@ -19,6 +23,8 @@ public class Institucion {
     protected final ProcesadorPagos procesadorPagos;
     private List<Transitista> transitistas = new ArrayList<>();
     private List<Mascota> mascotasTransitadoActualmente = new ArrayList<>();
+    private final int horaDeCierre = 18;
+    private final int horaDeApertura = 9;
 
     public Institucion(Long id, Localizacion localizacion, String nombre, String telefono, String email, ProcesadorPagos procesadorPagos) {
         this.id = id;
@@ -34,8 +40,10 @@ public class Institucion {
     }
 
     public void aceptar(SolicitudDeTransito solicitud) {
-        /*if (horario no es entre 9 y 18)
-            lanzar excepcion de institucion cerrada*/
+        int horaActual = LocalDateTime.now().getHour();
+        if ((horaActual < this.horaDeApertura) && (horaActual > this.horaDeCierre)) {
+            throw new InstitucionCerradaException("La institución está cerrada");
+        }
 
         Mascota mascota = solicitud.getMascota();
         if (!mascota.completoResgitro()) {
@@ -52,7 +60,7 @@ public class Institucion {
             }
         });
 
-        /*Lanzar excepcion de no se encontro transitista, probar de nuevo mañana*/
+        throw new NoSeEncontroTransitistaException("No se encontro un transitista. La mascota permanecera en la institucion.");
     }
 
     private List<Transitista> getRankingTransitistas() {
@@ -67,5 +75,13 @@ public class Institucion {
             return (distancia1-puntuacion1).compareTo(distancia2-puntuacion2);
         });*/
         return this.transitistas;
+    }
+
+    public List<Transitista> getTransitistas() {
+        return this.transitistas;
+    }
+
+    public List<Mascota> getMascotas() {
+        return this.mascotasTransitadoActualmente;
     }
 }
