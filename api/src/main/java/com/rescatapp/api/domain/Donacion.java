@@ -18,12 +18,11 @@ public class Donacion {
 
     private final BigDecimal maximoMontoComision = new BigDecimal(1000);
 
-    public Donacion(Long id, BigDecimal montoACobrar, BigDecimal comision) {
+    private final int limiteRecurrente = 5;
+
+    public Donacion(Long id, BigDecimal montoACobrar) {
         this.id = id;
         this.montoACobrar = montoACobrar;
-        this.comision = comision;
-        this.montoComision = montoACobrar.multiply(comision.setScale(10, RoundingMode.HALF_DOWN).divide(new BigDecimal(100), RoundingMode.HALF_DOWN));
-        this.montoADepositar = montoACobrar.subtract(this.montoComision);
     }
 
     public Long getId() {
