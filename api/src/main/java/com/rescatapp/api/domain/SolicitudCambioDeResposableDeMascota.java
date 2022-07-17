@@ -1,8 +1,6 @@
 package com.rescatapp.api.domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public abstract class SolicitudCambioDeResposableDeMascota {
     private Long id;
@@ -43,14 +41,18 @@ public abstract class SolicitudCambioDeResposableDeMascota {
         return this.mascota;
     }
 
-    public boolean tieneEstadoAprobada() {
+    public boolean estaAprobada() {
         return this.estaAprobada;
     }
+
+    public boolean estaRechazada() {
+        return !this.estaAprobada;
+    }
+
 
     public boolean estaEnCurso() {
         return this.enCurso;
     }
-
 
     public Usuario getUsuarioSolicitante() {
         return usuarioSolicitante;
@@ -64,5 +66,8 @@ public abstract class SolicitudCambioDeResposableDeMascota {
         return this.fechaDeRespuesta;
     }
 
+    public void cambiarUsuarioSolicitado(Usuario solicitado) {
+        this.usuarioSolicitado = solicitado;
+    }
 
 }

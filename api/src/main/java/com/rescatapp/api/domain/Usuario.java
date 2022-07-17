@@ -18,6 +18,8 @@ public abstract class Usuario {
     protected final ProcesadorPagos procesadorPagos;
     final List<Puntuacion> puntuacionesRecibidas = new ArrayList<>();
     final List<Usuario> usuariosQuePuntuaron = new ArrayList<>();
+    private boolean reportado;
+
     public Usuario(Long id, Localizacion localizacion, String nombre, String telefono, String email, ProcesadorPagos procesadorPagos) {
         this.id = id;
         this.localizacion = localizacion;
@@ -25,14 +27,15 @@ public abstract class Usuario {
         this.telefono = telefono;
         this.email = email;
         this.procesadorPagos = procesadorPagos;
+        this.reportado = false;
     }
 
     public void donar(Donacion donacion) {
         procesadorPagos.cobrar(donacion.getMontoACobrar(), this.cbu);
         this.donacionesRealizadas.add(donacion);
     }
-    public void agregarPuntuacion(Puntuacion puntuacion) throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
 
+    public void agregarPuntuacion(Puntuacion puntuacion) throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
         this.puntuacionesRecibidas.add(puntuacion);
         Usuario usuarioQuePuntua = puntuacion.getUsuarioQuePuntua();
         if (usuariosQuePuntuaron.contains(usuarioQuePuntua))
@@ -41,19 +44,14 @@ public abstract class Usuario {
     }
 
     public float calcularPuntuacionTotal() {
-        float total = 0;
         if (this.puntuacionesRecibidas.size() == 0)
             return 0;
-        for (Puntuacion puntaje : this.puntuacionesRecibidas) {
-            total += puntaje.getEstrellas();
-        }
+        float total = this.puntuacionesRecibidas.stream().map(Puntuacion::getEstrellas).reduce(0f, Float::sum);
         return total / this.puntuacionesRecibidas.size();
     }
 
     public boolean estaCercaDe(Localizacion localizacion) {
-        if (localizacion.calcularDistanciaEnKilometros(this.localizacion) < this.max_km_para_considerar_cercanos)
-            return true;
-        return false;
+        return localizacion.calcularDistanciaEnKilometros(this.localizacion) < this.max_km_para_considerar_cercanos;
     }
 
     public Long getId() {
@@ -104,4 +102,11 @@ public abstract class Usuario {
         return donacionesRealizadas;
     }
 
+    public void reportar() {
+        this.reportado = true;
+    }
+
+    public boolean fueResportado() {
+        return this.reportado;
+    }
 }

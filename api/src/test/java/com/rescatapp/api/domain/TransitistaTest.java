@@ -1,5 +1,6 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.SolicitudVencidaException;
 import com.rescatapp.api.domain.exceptions.*;
 import org.junit.Test;
 
@@ -8,8 +9,8 @@ import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,6 +21,8 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        perro.setCondicionFisica(Mascota.CondicionFisica.SANO);
+        perro.setPathFoto("/home/fotos/41351.png");
         SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
 
         Mascota resultado = transitista.aceptar(solicitud);
@@ -27,7 +30,7 @@ public class TransitistaTest {
         assertThat(resultado).isEqualTo(perro);
         assertThat(resultado.getUsuarioResponsable()).isEqualTo(transitista);
         assertThat(transitista.getMascotasEnTransito()).contains(perro);
-        assertThat(solicitud.tieneEstadoAprobada()).isEqualTo(true);
+        assertThat(solicitud.estaAprobada()).isEqualTo(true);
     }
 
     @Test
@@ -35,7 +38,10 @@ public class TransitistaTest {
         Transitista transitista = TransitistaBuilder.transitistaActivo().build();
         Rescatista rescatista = RescatistaBuilder.rescatista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        perro.setCondicionFisica(Mascota.CondicionFisica.SANO);
+        perro.setPathFoto("/home/fotos/41351.png");
         SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
+
         transitista.aceptar(solicitud);
 
         transitista.pasarAAdopcion(perro);
@@ -52,7 +58,19 @@ public class TransitistaTest {
         SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now(), perro, rescatista, transitista);
 
 
-        assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(UsuarioSinCapacidadException.class);
+        assertThatThrownBy(() -> transitista.aceptar(solicitud)).isInstanceOf(UsuarioSinCapacidadException.class);
+    }
+
+    @Test
+    public void aceptarConSolicitudDeTransitoVencidaLanzaException() {
+        Transitista transitista = TransitistaBuilder.transitistaActivo().build();
+        Rescatista rescatista = RescatistaBuilder.rescatista().build();
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        perro.setCondicionFisica(Mascota.CondicionFisica.SANO);
+        perro.setPathFoto("/home/fotos/41351.png");
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(3L, LocalDateTime.now().minus(Duration.ofMinutes(20)), perro, rescatista, transitista);
+
+        assertThatThrownBy(() -> transitista.aceptar(solicitud)).isInstanceOf(SolicitudVencidaException.class);
     }
 
     @Test
@@ -69,6 +87,20 @@ public class TransitistaTest {
     }
 
     @Test
+    public void agregarSolicitudCon5solicitudesPendientesLaRechaza() {
+        Rescatista rescatista = RescatistaBuilder.rescatista().build();
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        Transitista transitista = TransitistaBuilder.transitistaActivo().conSolicitudesPendientes(4, rescatista, perro).build();
+        SolicitudDeTransito solicitud = new SolicitudDeTransito(1L, LocalDateTime.now(), perro, rescatista, transitista);
+
+        transitista.agregar(solicitud);
+
+        assertThat(transitista.solicitudesDeTransito).contains(solicitud);
+        assertThat(solicitud.estaRechazada()).isEqualTo(true);
+    }
+
+
+    @Test
     public void aceptarConSolicitudDeAdopcionYTransititasActivoAumentaEnUnoSuCapacidad() throws MascotaNoCumpleConPreferenciasBuscadasException {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
         Adoptista adoptista = AdoptistaBuilder.adoptista().build();
@@ -80,7 +112,7 @@ public class TransitistaTest {
         assertThat(resultado).isEqualTo(perro);
         assertThat(resultado.getUsuarioResponsable()).isEqualTo(adoptista);
         assertThat(transitista.getmascotasTransitadas()).contains(perro);
-        assertThat(solicitud.tieneEstadoAprobada()).isEqualTo(true);
+        assertThat(solicitud.estaAprobada()).isEqualTo(true);
         assertThat(transitista.getCapacidad()).isEqualTo(4);
     }
 
@@ -91,7 +123,7 @@ public class TransitistaTest {
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
         SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, LocalDateTime.now(), perro, adoptista, transitista);
 
-        assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(UsuarioNoTieneEsaMascotaException.class);
+        assertThatThrownBy(() -> transitista.aceptar(solicitud)).isInstanceOf(UsuarioNoTieneEsaMascotaException.class);
     }
 
     @Test
@@ -116,7 +148,7 @@ public class TransitistaTest {
 
         transitista.rechazar(solicitud);
 
-        assertThat(solicitud.tieneEstadoAprobada()).isEqualTo(false);
+        assertThat(solicitud.estaAprobada()).isEqualTo(false);
         assertThat(solicitud.estaEnCurso()).isEqualTo(false);
     }
 
@@ -126,7 +158,7 @@ public class TransitistaTest {
         String cbu = "11111111111111111111";
         Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, procesadorPagos);
         transitista.setCbu(cbu);
-        Donacion donacion = new Donacion(1L, new BigDecimal(100), new BigDecimal(1));
+        Donacion donacion = new Donacion(1L, new BigDecimal(100));
         doNothing().when(procesadorPagos).pagar(donacion.getMontoADepositar(), cbu);
         doNothing().when(procesadorPagos).recaudar(donacion.getMontoComision());
 
@@ -181,7 +213,7 @@ public class TransitistaTest {
     public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16PuntuacionesYCincoRespuestasConMuchaDemora() throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
         Transitista transitista = TransitistaBuilder.transitistaPuntuado16Veces().build();
         SolicitudDeTransito solicitud = SolicitudDeTransitoBuilder.SolicitudDeTransitoRespuestaConMuchaDemora().build();
-        for (int i = 0; i <= 5; i++){
+        for (int i = 0; i <= 5; i++) {
             transitista.agregar(solicitud);
         }
 

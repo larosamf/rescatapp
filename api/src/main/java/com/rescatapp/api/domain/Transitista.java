@@ -1,8 +1,9 @@
 package com.rescatapp.api.domain;
 
 import com.rescatapp.api.domain.exceptions.MascotaNoCumpleConPreferenciasBuscadasException;
-import com.rescatapp.api.domain.exceptions.UsuarioNoTieneEsaMascotaException;
-import com.rescatapp.api.domain.exceptions.UsuarioSinCapacidadException;
+import com.rescatapp.api.domain.exceptions.*;
+
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +11,18 @@ import java.util.Objects;
 
 public class Transitista extends Usuario {
     private int capacidad;
+
+    private final int maxSolicitudesTransito = 5;
+
     private final List<Mascota> mascotasTransitadas = new ArrayList<>();
     List<Mascota> mascotasTransitadoActualmente = new ArrayList<>();
     private final List<Donacion> donacionesRecibidas = new ArrayList<>();
     private boolean estaActivo;
     List<SolicitudDeTransito> solicitudesDeTransito = new ArrayList<>();
     List<SolicitudDeAdopcion> solicitudesDeAdopcion = new ArrayList<>();
+
+    List<Transitista> contactosTransitistas = new ArrayList<>();
+    private final int minutosMaximosRespuesta = 10;
 
     public Transitista(Long id, Localizacion localizacion, String nombre, String telefono, String email, int capacidad, ProcesadorPagos procesadorPagos) {
         super(id, localizacion, nombre, telefono, email, procesadorPagos);
@@ -24,35 +31,56 @@ public class Transitista extends Usuario {
     }
 
 
-    public boolean mostrarComoActivo(){
+    public boolean mostrarComoActivo() {
         this.estaActivo = true;
         return true;
     }
 
-    public boolean mostrarComoNoActivo(){
+    public boolean mostrarComoNoActivo() {
         this.estaActivo = false;
         return false;
     }
 
     public boolean agregar(SolicitudDeTransito solicitud) {
+        if (this.solicitudesDeTransito.stream().filter(SolicitudCambioDeResposableDeMascota::estaEnCurso).count() > maxSolicitudesTransito) {
+            this.solicitudesDeTransito.add(solicitud);
+            solicitud.rechazar();
+        }
         this.solicitudesDeTransito.add(solicitud);
         return true;
     }
 
     public Mascota aceptar(SolicitudDeTransito solicitud) {
-        if (this.capacidad > 0 && this.estaActivo) {
-            solicitud.aprobar();
-            Mascota mascota = solicitud.getMascota();
-            mascota.setUsuarioResponsable(this);
-            this.mascotasTransitadoActualmente.add(mascota);
-            this.capacidad--;
-            return mascota;
+        if (solicitud.getUsuarioSolicitante().fueResportado()) {
+            throw new UsuarioReportadoException("El rescatista no es confiable");
         }
-        throw new UsuarioSinCapacidadException("El transitista no tiene capacidad para recibir mas mascotas");
+
+        if (ChronoUnit.MINUTES.between(solicitud.getFechaDeCreacion(), LocalDateTime.now()) > minutosMaximosRespuesta) {
+            throw new SolicitudVencidaException("La solicitud esta vencida");
+        }
+
+
+        if (this.capacidad == 0 || !this.estaActivo) {
+            throw new UsuarioSinCapacidadException("El transitista no tiene capacidad para recibir mas mascotas");
+        }
+
+        Mascota mascota = solicitud.getMascota();
+        if (!mascota.completoResgitro()) {
+            throw new NoSeCompletoRegistroDeMascotaException("No se completo el registro de la mascota");
+        }
+
+        solicitud.aprobar();
+        mascota.setUsuarioResponsable(this);
+        this.mascotasTransitadoActualmente.add(mascota);
+        this.capacidad--;
+        return mascota;
     }
 
-    public void rechazar(SolicitudDeTransito solicitud){
+    public void rechazar(SolicitudDeTransito solicitud) {
         solicitud.rechazar();
+        if (contactosTransitistas.size() != 0) {
+            solicitud.cambiarUsuarioSolicitado(contactosTransitistas.get(0));
+        }
     }
 
     public boolean agregar(SolicitudDeAdopcion solicitud) {
@@ -79,7 +107,7 @@ public class Transitista extends Usuario {
         throw new UsuarioNoTieneEsaMascotaException("El transitista no esta a cargo de esa mascotas");
     }
 
-    public void rechazar(SolicitudDeAdopcion solicitud){
+    public void rechazar(SolicitudDeAdopcion solicitud) {
         solicitud.rechazar();
     }
 
@@ -121,8 +149,7 @@ public class Transitista extends Usuario {
     }
 
     public void recibirDonacion(Donacion donacion) {
-        this.procesadorPagos.pagar(donacion.getMontoADepositar(), this.getCbu());
-        this.procesadorPagos.recaudar(donacion.getMontoComision());
+        donacion.procesar(getCbu(), this.donacionesRecibidas.size(), this.procesadorPagos);
         this.donacionesRecibidas.add(donacion);
     }
 
@@ -144,8 +171,8 @@ public class Transitista extends Usuario {
                     divisor += 1;
                 }
             }
-        //Caso por si tiene mas de 15 puntuaciones
-        }else{
+            //Caso por si tiene mas de 15 puntuaciones
+        } else {
             for (Puntuacion puntaje : this.puntuacionesRecibidas) {
                 total += puntaje.getEstrellas();
             }
@@ -159,9 +186,9 @@ public class Transitista extends Usuario {
         }
         result = total - penalizacion;
         //Devuelvo 0 tiene mas penalizaciones que puntuacion y devuelve el promedio en caso contrario
-        if (result <= 0){
+        if (result <= 0) {
             return 0;
-        }else{
+        } else {
             return result / divisor;
         }
     }

@@ -1,8 +1,6 @@
 package com.rescatapp.api.domain;
 
 
-import com.rescatapp.api.domain.exceptions.ValorComisionIncorrectoException;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -10,16 +8,20 @@ import java.util.Objects;
 public class Donacion {
     private final Long id;
     private final BigDecimal montoACobrar;
-    private final BigDecimal montoADepositar;
-    private final BigDecimal montoComision;
-    private final BigDecimal comision;
+    private BigDecimal montoADepositar;
+    private BigDecimal comision;
+    private BigDecimal montoComision;
 
-    public Donacion(Long id, BigDecimal montoACobrar, BigDecimal comision) throws ValorComisionIncorrectoException {
+    private final BigDecimal comisionRegular = new BigDecimal(10);
+
+    private final BigDecimal comisionRecurrente = new BigDecimal(5);
+
+    private final BigDecimal maximoMontoComision = new BigDecimal(1000);
+
+    public Donacion(Long id, BigDecimal montoACobrar, BigDecimal comision) {
         this.id = id;
         this.montoACobrar = montoACobrar;
         this.comision = comision;
-        if (this.comision.compareTo( new BigDecimal(0)) == -1 || this.comision.compareTo(new BigDecimal(100)) == 1)
-            throw new ValorComisionIncorrectoException("El valor de la comision es incorrecto, tiene que ser un numero entre 0 y 100" );
         this.montoComision = montoACobrar.multiply(comision.setScale(10, RoundingMode.HALF_DOWN).divide(new BigDecimal(100), RoundingMode.HALF_DOWN));
         this.montoADepositar = montoACobrar.subtract(this.montoComision);
     }
@@ -40,8 +42,13 @@ public class Donacion {
         return montoComision;
     }
 
-    public BigDecimal getComision() {
-        return comision;
+    public void procesar(String cbuDestino, int cantidadDonacionesRecibidas, ProcesadorPagos procesadorPagos) {
+        this.comision = cantidadDonacionesRecibidas >= limiteRecurrente ? comisionRecurrente : comisionRegular;
+        this.montoComision = montoACobrar.multiply(comision.setScale(10, RoundingMode.HALF_DOWN).divide(new BigDecimal(100), RoundingMode.HALF_DOWN)).min(maximoMontoComision);
+        this.montoADepositar = montoACobrar.subtract(this.montoComision);
+        procesadorPagos.pagar(montoADepositar, cbuDestino);
+        procesadorPagos.recaudar(montoComision);
+
     }
 
     @Override
