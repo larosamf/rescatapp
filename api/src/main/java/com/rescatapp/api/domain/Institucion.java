@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.lang.Double;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 
 public class Institucion {
@@ -64,7 +65,7 @@ public class Institucion {
     }
 
     private List<Transitista> getRankingTransitistas() {
-        /*return Collections.sort(this.transitistas, (Comparator<Transitista>) (t1, t2) -> {
+        return this.transitistas.stream().sorted((t1, t2) -> {
             Localizacion localizacion1 = t1.getLocalizacion();
             Localizacion localizacion2 = t2.getLocalizacion();
             double distancia1 = localizacion.calcularDistanciaEnKilometros(localizacion2);
@@ -72,9 +73,8 @@ public class Institucion {
 
             float puntuacion1 = t1.calcularPuntuacionTotal();
             float puntuacion2 = t2.calcularPuntuacionTotal();
-            return (distancia1-puntuacion1).compareTo(distancia2-puntuacion2);
-        });*/
-        return this.transitistas;
+            return Double.compare(distancia1 - puntuacion1, distancia2 - puntuacion2);
+        }).collect(Collectors.toList());
     }
 
     public List<Transitista> getTransitistas() {
