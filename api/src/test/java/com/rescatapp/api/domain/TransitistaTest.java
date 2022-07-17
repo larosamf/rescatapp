@@ -1,8 +1,7 @@
 package com.rescatapp.api.domain;
 
 import com.rescatapp.api.domain.exceptions.SolicitudVencidaException;
-import com.rescatapp.api.domain.exceptions.UsuarioNoTieneEsaMascotaException;
-import com.rescatapp.api.domain.exceptions.UsuarioSinCapacidadException;
+import com.rescatapp.api.domain.exceptions.*;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -102,7 +101,7 @@ public class TransitistaTest {
 
 
     @Test
-    public void aceptarConSolicitudDeAdopcionYTransititasActivoAumentaEnUnoSuCapacidad() {
+    public void aceptarConSolicitudDeAdopcionYTransititasActivoAumentaEnUnoSuCapacidad() throws MascotaNoCumpleConPreferenciasBuscadasException {
         Transitista transitista = TransitistaBuilder.transitistaActivoConMascotas().build();
         Adoptista adoptista = AdoptistaBuilder.adoptista().build();
         Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
@@ -154,7 +153,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void recibirDonacionConDonacionTransfiereDineroATransitista() {
+    public void recibirDonacionConDonacionTransfiereDineroATransitista() throws ValorComisionIncorrectoException {
         ProcesadorPagos procesadorPagos = mock(ProcesadorPagos.class);
         String cbu = "11111111111111111111";
         Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, procesadorPagos);
@@ -172,7 +171,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon3Puntuaciones() {
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon3Puntuaciones() throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
         Transitista transitista = TransitistaBuilder.transitistaPuntuado3Veces().build();
 
         float resultado = transitista.calcularPuntuacionTotal();
@@ -181,7 +180,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16Puntuaciones() {
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16Puntuaciones() throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
         Transitista transitista = TransitistaBuilder.transitistaPuntuado16Veces().build();
 
         float resultado = transitista.calcularPuntuacionTotal();
@@ -190,7 +189,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon3Puntuaciones1DeAdoptista() {
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon3Puntuaciones1DeAdoptista() throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
         Transitista transitista = TransitistaBuilder.transitistaPuntuado3Veces1PorAdoptista().build();
 
         float resultado = transitista.calcularPuntuacionTotal();
@@ -199,7 +198,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16PuntuacionesYUnaRespuestaInmediata() {
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16PuntuacionesYUnaRespuestaInmediata() throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
         Transitista transitista = TransitistaBuilder.transitistaPuntuado16Veces().build();
         SolicitudDeTransito solicitud = SolicitudDeTransitoBuilder.SolicitudDeTransitoRespuestaInmediata().build();
 
@@ -211,7 +210,7 @@ public class TransitistaTest {
     }
 
     @Test
-    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16PuntuacionesYCincoRespuestasConMuchaDemora() {
+    public void calcularPuntuacionTotalConTransitistaSinSolicitudesDevuelvePromedioCon16PuntuacionesYCincoRespuestasConMuchaDemora() throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
         Transitista transitista = TransitistaBuilder.transitistaPuntuado16Veces().build();
         SolicitudDeTransito solicitud = SolicitudDeTransitoBuilder.SolicitudDeTransitoRespuestaConMuchaDemora().build();
         for (int i = 0; i <= 5; i++) {
@@ -231,5 +230,29 @@ public class TransitistaTest {
         float resultado = transitista.calcularPuntuacionTotal();
 
         assertThat(resultado).isEqualTo(0);
+    }
+
+    @Test
+    public void mismoUsuarioPuntuaMasDeUnaVezAlMismoTransitistaLanzaException() throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
+        Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, null);
+        Usuario usuario_2 = new UsuarioTest.DummyUsuario(2L, new Localizacion(-50f, -50f, "prueba"), "prueba2", "5678", "test@†est.com",  null);
+        Puntuacion puntuacion_1 = new Puntuacion(2.5F, "Buena persona.",usuario_2);
+        transitista.agregarPuntuacion(puntuacion_1);
+        Puntuacion puntuacion_2 = new Puntuacion(5F, "Buena persona.",usuario_2);
+
+        assertThatThrownBy(() -> transitista.agregarPuntuacion(puntuacion_2)).isInstanceOf(UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException.class);
+    }
+
+    @Test
+    public void aceptarSolicitudDeAdopcionConAdoptistaConPreferenciasDistintasALaMacotaLanzaException() {
+        Transitista transitista = new Transitista(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com", 2, null);
+        Adoptista adoptista = new Adoptista(1L, new Localizacion(-50f, -50f,"prueba"), "prueba", "1234", "test@†est.com", null);
+        Mascota perro = new Mascota(8L, Mascota.Tipo.PERRO);
+        perro.setCondicionFisica(Mascota.CondicionFisica.MUY_LASTIMADO);
+        perro.setTamano(Mascota.Tamano.GRANDE);
+        adoptista.setPreferencias(Adoptista.Tamano.GRANDE, Adoptista.Tipo.PERRO, Adoptista.CondicionFisica.SANO);
+        SolicitudDeAdopcion solicitud = new SolicitudDeAdopcion(3L, LocalDateTime.now(), perro, adoptista, transitista);
+
+        assertThatThrownBy(()->transitista.aceptar(solicitud)).isInstanceOf(MascotaNoCumpleConPreferenciasBuscadasException.class);
     }
 }

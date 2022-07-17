@@ -8,7 +8,7 @@ public abstract class SolicitudCambioDeResposableDeMascota {
     LocalDateTime fechaDeRespuesta;
     private boolean estaAprobada;
     private Mascota mascota;
-    private Usuario usuarioSolicitante;
+    protected Usuario usuarioSolicitante;
     private Usuario usuarioSolicitado;
     private boolean enCurso;
 

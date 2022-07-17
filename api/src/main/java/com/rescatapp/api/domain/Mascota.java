@@ -90,6 +90,9 @@ public class Mascota {
     public Tamano getTamano() {
         return tamano;
     }
+    public Tipo getTipo() {
+        return tipo;
+    }
 
     public void setTamano(Tamano tamano) {
         this.tamano = tamano;

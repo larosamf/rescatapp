@@ -1,5 +1,7 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException;
+import com.rescatapp.api.domain.exceptions.ValorComisionIncorrectoException;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -15,7 +17,7 @@ public class UsuarioTest {
     }
 
     @Test
-    public void donarConUsuarioLeAgregaUnaDonacion() {
+    public void donarConUsuarioLeAgregaUnaDonacion() throws ValorComisionIncorrectoException {
         ProcesadorPagos procesadorPagos = mock(ProcesadorPagos.class);
         String cbu = "11111111111111111111";
         Usuario usuario = new DummyUsuario(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",  procesadorPagos);
@@ -50,14 +52,17 @@ public class UsuarioTest {
     }
 
     @Test
-    public void calcularPuntuacionTotalConUsuarioNoTransitistaDevuelvePromedio() {
+    public void calcularPuntuacionTotalConUsuarioNoTransitistaDevuelvePromedio() throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
         ProcesadorPagos procesadorPagos = mock(ProcesadorPagos.class);
         Usuario usuario = new UsuarioTest.DummyUsuario(1L, new Localizacion(-50f, -50f, "prueba"), "prueba", "1234", "test@†est.com",  procesadorPagos);
-        Puntuacion puntuacion_1 = new Puntuacion(2.5F, "Buena persona.");
+        Usuario usuario_2 = new UsuarioTest.DummyUsuario(2L, new Localizacion(-50f, -50f, "prueba"), "prueba2", "5678", "test@†est.com",  null);
+        Usuario usuario_3 = new UsuarioTest.DummyUsuario(2L, new Localizacion(-50f, -50f, "prueba"), "prueba3", "91011", "test@†est.com",  null);
+        Usuario usuario_4 = new UsuarioTest.DummyUsuario(2L, new Localizacion(-50f, -50f, "prueba"), "prueba4", "121314", "test@†est.com",  null);
+        Puntuacion puntuacion_1 = new Puntuacion(2.5F, "Buena persona.",usuario_2);
         usuario.agregarPuntuacion(puntuacion_1);
-        Puntuacion puntuacion_2 = new Puntuacion(5F, "Buena persona.");
+        Puntuacion puntuacion_2 = new Puntuacion(5F, "Buena persona.",usuario_3);
         usuario.agregarPuntuacion(puntuacion_2);
-        Puntuacion puntuacion_3 = new Puntuacion(1.5F, "Buena persona.");
+        Puntuacion puntuacion_3 = new Puntuacion(1.5F, "Buena persona.",usuario_4);
         usuario.agregarPuntuacion(puntuacion_3);
 
         float resultado = usuario.calcularPuntuacionTotal();
