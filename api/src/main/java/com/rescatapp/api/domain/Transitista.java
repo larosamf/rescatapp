@@ -1,10 +1,12 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.MascotaNoCumpleConPreferenciasBuscadasException;
 import com.rescatapp.api.domain.exceptions.UsuarioNoTieneEsaMascotaException;
 import com.rescatapp.api.domain.exceptions.UsuarioSinCapacidadException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Transitista extends Usuario {
     private int capacidad;
@@ -58,8 +60,14 @@ public class Transitista extends Usuario {
         return true;
     }
 
-    public Mascota aceptar(SolicitudDeAdopcion solicitud){
+    public Mascota aceptar(SolicitudDeAdopcion solicitud) throws MascotaNoCumpleConPreferenciasBuscadasException {
         Mascota mascota = solicitud.getMascota();
+        Adoptista usuarioAdoptista = solicitud.getUsuarioSolicitante();
+        if (usuarioAdoptista.getPreferencias()){
+            if(!Objects.equals(mascota.getTamano().toString(), usuarioAdoptista.getTamanoMascota().toString()) || !Objects.equals(mascota.getTipo().toString(), usuarioAdoptista.getTipoMascota().toString()) || !Objects.equals(mascota.getCondicionFisica().toString(), usuarioAdoptista.getCondicionFisicaMascota().toString())) {
+                throw new MascotaNoCumpleConPreferenciasBuscadasException("La mascota no cumple con las preferencias buscasdas por el Adoptista, hay que rechazar la solicitud.");
+            }
+        }
         if (this.mascotasTransitadoActualmente.contains(mascota) && this.estaActivo) {
             solicitud.aprobar();
             mascota.setUsuarioResponsable(solicitud.getUsuarioSolicitante());

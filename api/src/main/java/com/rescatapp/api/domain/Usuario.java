@@ -1,5 +1,8 @@
 package com.rescatapp.api.domain;
 
+import com.rescatapp.api.domain.exceptions.ValorComisionIncorrectoException;
+import com.rescatapp.api.domain.exceptions.UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +17,7 @@ public abstract class Usuario {
     private final List<Donacion> donacionesRealizadas = new ArrayList<>();
     protected final ProcesadorPagos procesadorPagos;
     final List<Puntuacion> puntuacionesRecibidas = new ArrayList<>();
+    final List<Usuario> usuariosQuePuntuaron = new ArrayList<>();
     public Usuario(Long id, Localizacion localizacion, String nombre, String telefono, String email, ProcesadorPagos procesadorPagos) {
         this.id = id;
         this.localizacion = localizacion;
@@ -27,8 +31,13 @@ public abstract class Usuario {
         procesadorPagos.cobrar(donacion.getMontoACobrar(), this.cbu);
         this.donacionesRealizadas.add(donacion);
     }
-    public void agregarPuntuacion(Puntuacion puntuacion) {
+    public void agregarPuntuacion(Puntuacion puntuacion) throws UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException {
+
         this.puntuacionesRecibidas.add(puntuacion);
+        Usuario usuarioQuePuntua = puntuacion.getUsuarioQuePuntua();
+        if (usuariosQuePuntuaron.contains(usuarioQuePuntua))
+            throw new UsuarioQuePuntuaYaRealizoUnaPuntuacionAntesException("El usuario que quiere puntuar ya habia hecho una puntuacion antes." );
+        this.usuariosQuePuntuaron.add(puntuacion.getUsuarioQuePuntua());
     }
 
     public float calcularPuntuacionTotal() {
