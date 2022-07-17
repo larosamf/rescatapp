@@ -30,17 +30,15 @@ public abstract class Usuario {
         procesadorPagos.cobrar(donacion.getMontoACobrar(), this.cbu);
         this.donacionesRealizadas.add(donacion);
     }
+
     public void agregarPuntuacion(Puntuacion puntuacion) {
         this.puntuacionesRecibidas.add(puntuacion);
     }
 
     public float calcularPuntuacionTotal() {
-        float total = 0;
         if (this.puntuacionesRecibidas.size() == 0)
             return 0;
-        for (Puntuacion puntaje : this.puntuacionesRecibidas) {
-            total += puntaje.getEstrellas();
-        }
+        float total = this.puntuacionesRecibidas.stream().map(Puntuacion::getEstrellas).reduce(0f, Float::sum);
         return total / this.puntuacionesRecibidas.size();
     }
 
